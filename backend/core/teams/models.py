@@ -15,7 +15,7 @@ class TeamMember(models.Model):
     role = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        unique_together = ('team', 'user')  # prevents duplicate membership
+        unique_together = ('team', 'user') 
 
     def __str__(self):
         return f"{self.user} in {self.team}"
