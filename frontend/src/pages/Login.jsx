@@ -17,7 +17,7 @@ export default function Login() {
 
     try {
       await login(email, password);
-      navigate("/dashboard"); 
+      navigate("/dashboard");
     } catch (err) {
       setError("Invalid email or password.");
     } finally {
@@ -26,75 +26,83 @@ export default function Login() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <div
-        style={{
-          width: "320px",
-          padding: "32px",
-          border: "0.5px solid #ddd",
-          borderRadius: "12px",
-        }}
-      >
-        <h2 style={{ margin: "0 0 4px" }}>Welcome back</h2>
-        <p style={{ margin: "0 0 20px", fontSize: "14px", color: "gray" }}>
-          Log in to your workspace
-        </p>
+    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900 px-6 py-12">
+      <div className="w-full max-w-md flex flex-col gap-10">
+        <div className="text-center">
+          <h2 className="mt-6 text-3xl font-bold tracking-tight text-white">
+            Sign in to your workspace
+          </h2>
+        </div>
 
-        {error && (
-          <p style={{ color: "red", fontSize: "13px", marginBottom: "12px" }}>
-            {error}
-          </p>
-        )}
-
-        <label style={{ fontSize: "13px" }}>Email</label>
-        <input
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{
-            width: "100%",
-            marginBottom: "12px",
-            boxSizing: "border-box",
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
           }}
-        />
-
-        <label style={{ fontSize: "13px" }}>Password</label>
-        <input
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%",
-            marginBottom: "20px",
-            boxSizing: "border-box",
-          }}
-        />
-
-        <button
-          onClick={handleLogin}
-          disabled={loading}
-          style={{ width: "100%", padding: "10px", fontWeight: "500" }}
+          className="flex flex-col gap-8"
         >
-          {loading ? "Logging in..." : "Log in"}
-        </button>
+          <div className="flex flex-col gap-3">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-gray-100"
+            >
+              Email
+            </label>
 
-        <p style={{ textAlign: "center", fontSize: "13px", marginTop: "16px" }}>
-          No account? <Link to="/register">Register</Link>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autoComplete="email"
+              placeholder="  you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-md bg-white/5 px-4 py-3 text-white outline outline-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:outline-indigo-500"
+            />
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-gray-100"
+            >
+              Password
+            </label>
+
+            <input
+              id="password"
+              type="password"
+              required
+              autoComplete="current-password"
+              placeholder=" ••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-md bg-white/5 px-4 py-3 text-white outline outline-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:outline-indigo-500"
+            />
+          </div>
+
+          {error && <p className="text-center text-sm text-red-400">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-md bg-indigo-500 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-400 disabled:opacity-50"
+          >
+            {loading ? "Logging in..." : "Log in"}
+          </button>
+        </form>
+
+        <p className="text-center text-sm text-gray-400">
+          No account?{" "}
+          <Link
+            to="/register"
+            className="font-semibold text-indigo-400 hover:text-indigo-300"
+          >
+            Register
+          </Link>
         </p>
       </div>
     </div>
   );
 }
-
-
-
-

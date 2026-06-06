@@ -3,7 +3,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 
-// Checks if user is logged in — if not, sends to /login
 function PrivateRoute({ children }) {
   const isLoggedIn = !!localStorage.getItem("access_token");
   return isLoggedIn ? children : <Navigate to="/login" />;

@@ -1,4 +1,6 @@
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
+// components/Navbar.jsx
+
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { BellIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
@@ -15,95 +17,74 @@ function classNames(...classes) {
 
 export default function Navbar({ activePage, onNavigate, onLogout }) {
   return (
-    <Disclosure as="nav" className="relative bg-gray-800/50 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-white/10">
-    
-      <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
+    <nav className="w-full bg-gray-800 border-b border-gray-700 px-6 h-16 flex items-center justify-between">
 
-          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-           
-            <div className="flex shrink-0 items-center">
-              <img
-                alt="Your Company"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                className="h-8 w-auto"
-              />
-            </div>
+     
+      <div className="flex items-center gap-6">
+        <div></div>
+        <img
+          src="/icon.svg"
+          alt="Logo"
+          className="h-12 w-auto"
+        />
 
-            <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-4">
-                {navigation.map((item) => (
-                  <button
-                    key={item.name}
-                    onClick={() => onNavigate(item.name)}
-                    className={classNames(
-                      activePage === item.name
-                        ? 'bg-gray-950/50 text-white'
-                        : 'text-gray-300 hover:bg-white/5 hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium border-none bg-transparent cursor-pointer'
-                    )}
-                  >
-                    {item.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            <button type="button" className="relative rounded-full p-1 text-gray-400 hover:text-white">
-              <BellIcon className="size-6" />
-            </button>
-
-            <Menu as="div" className="relative ml-3">
-              <MenuButton className="relative flex rounded-full">
-                <img
-                  alt="profile"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  className="size-8 rounded-full bg-gray-800"
-                />
-              </MenuButton>
-
-              <MenuItems className="absolute right-0 z-10 mt-2 w-48 rounded-md bg-gray-800 py-1 outline -outline-offset-1 outline-white/10 transition data-closed:scale-95 data-closed:opacity-0 data-enter:duration-100 data-leave:duration-75">
-                <MenuItem>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5">
-                    Your Profile
-                  </a>
-                </MenuItem>
-                <MenuItem>
-                  <button
-                    onClick={onLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5 bg-transparent border-none cursor-pointer"
-                  >
-                    Sign out
-                  </button>
-                </MenuItem>
-              </MenuItems>
-            </Menu>
-          </div>
-
-        </div>
-      </div>
-
-      <DisclosurePanel className="sm:hidden">
-        <div className="space-y-1 px-2 pt-2 pb-3">
+        <div className="flex items-center gap-1">
           {navigation.map((item) => (
-            <DisclosureButton
+            <button
               key={item.name}
-              as="button"
               onClick={() => onNavigate(item.name)}
               className={classNames(
                 activePage === item.name
-                  ? 'bg-gray-950/50 text-white'
-                  : 'text-gray-300 hover:bg-white/5 hover:text-white',
-                'block w-full text-left rounded-md px-3 py-2 text-base font-medium border-none bg-transparent cursor-pointer'
+                  ? 'bg-gray-900 text-white'
+                  : 'text-gray-300 hover:bg-gray-700 hover:text-white',
+                'px-4 py-2 rounded-md text-sm font-medium cursor-pointer border-none'
               )}
             >
               {item.name}
-            </DisclosureButton>
+            </button>
           ))}
         </div>
-      </DisclosurePanel>
-    </Disclosure>
+      </div>
+
+      <div className="flex items-center gap-4">
+
+       
+        <button className="text-gray-400 hover:text-white rounded-full p-1 border-none cursor-pointer">
+          <BellIcon className="h-6 w-6" />
+        </button>
+
+       
+        <Menu as="div" className="relative">
+          <MenuButton className="flex rounded-full border-none cursor-pointer focus:outline-none">
+            <img
+              src="user.png"
+              alt="profile"
+              className="h-9 w-9 rounded-full ring-2 ring-gray-600"
+            />
+          </MenuButton>
+
+          
+          <MenuItems className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg ring-1 ring-black/30 z-50 focus:outline-none">
+            <MenuItem>
+              <a
+                href="#"
+                className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-t-md profile"
+              >
+                Your Profile
+              </a>
+            </MenuItem>
+            <MenuItem>
+              <button
+                onClick={onLogout}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white bg-transparent border-none cursor-pointer rounded-b-md out"
+              >
+                Sign out
+              </button>
+            </MenuItem>
+          </MenuItems>
+        </Menu>
+
+      </div>
+    </nav>
   )
 }
