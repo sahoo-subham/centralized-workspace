@@ -36,19 +36,7 @@ export default function CreateTeamForm({ onCreated, onCancel }) {
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "rgba(0,0,0,0.70)",
-        backdropFilter: "blur(8px)",
-        padding: "24px",
-      }}
-    >
+    <div className="fixed inset-0 z-[50] flex items-center justify-center bg-black/70 backdrop-blur-[8px] p-6">
       <div
         style={{
           width: "100%",

@@ -1,0 +1,7 @@
+- [x] Fix Teams page role-hook wiring (Teams.jsx import)
+- [ ] Fix Teams page pagination so navigation works on 2nd/3rd pages
+- [ ] Add/ensure Edit Member + Add Member buttons per team (role-based)
+- [ ] Update TeamTable to accept onAddMember/onEditMember callbacks
+- [ ] Wire callbacks from Teams.jsx into TeamTable
+- [ ] (Optional) Use Tailwind utility classes instead of heavy inline styles where possible (keep existing look)
+- [ ] Verify by running dev/build and clicking pagination + modal forms

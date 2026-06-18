@@ -7,14 +7,13 @@ export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     setError("");
     setLoading(true);
-
     try {
       await login(email, password);
       navigate("/dashboard");
@@ -25,83 +24,204 @@ export default function Login() {
     }
   };
 
+  const inputStyle = {
+    width: "100%",
+    background: "#232938",
+    border: "1px solid #3f4659",
+    borderRadius: "12px",
+    color: "#fff",
+    fontSize: "14px",
+    padding: "13px 16px",
+    outline: "none",
+    boxSizing: "border-box",
+    fontFamily: "inherit",
+  };
+
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900 px-6 py-12">
-      <div className="w-full max-w-md flex flex-col gap-10">
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold tracking-tight text-white">
-            Sign in to your workspace
-          </h2>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#0f1117",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "420px",
+          background: "#1a1f2e",
+          border: "1px solid #2d3348",
+          borderRadius: "24px",
+          overflow: "hidden",
+          boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
+        }}
+      >
+        <div
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 50%, rgba(99,102,241,0.25) 100%)",
+            borderBottom: "1px solid #2d3348",
+            padding: "32px",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "56px",
+              height: "56px",
+              borderRadius: "16px",
+              background: "rgba(99,102,241,0.2)",
+              border: "1px solid rgba(99,102,241,0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "26px",
+              margin: "0 auto 16px",
+            }}
+          >
+            ⚡
+          </div>
+          <p
+            style={{
+              color: "#fff",
+              fontWeight: "700",
+              fontSize: "22px",
+              margin: 0,
+            }}
+          >
+            Centralized Workspace
+          </p>
+          <p style={{ color: "#94a3b8", fontSize: "13px", marginTop: "6px" }}>
+            Sign in to your account
+          </p>
         </div>
 
         <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin();
+          onSubmit={handleLogin}
+          style={{
+            padding: "32px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
           }}
-          className="flex flex-col gap-8"
         >
-          <div className="flex flex-col gap-3">
+          <div>
             <label
-              htmlFor="email"
-              className="text-sm font-medium text-gray-100"
+              style={{
+                color: "#94a3b8",
+                fontSize: "11px",
+                fontWeight: "600",
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                display: "block",
+                marginBottom: "8px",
+              }}
             >
               Email
             </label>
-
             <input
-              id="email"
-              name="email"
               type="email"
               required
-              autoComplete="email"
-              placeholder="  you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-md bg-white/5 px-4 py-3 text-white outline outline-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:outline-indigo-500"
+              placeholder="you@example.com"
+              style={inputStyle}
+              onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
+              onBlur={(e) => (e.target.style.borderColor = "#3f4659")}
             />
           </div>
 
-          <div className="flex flex-col gap-3">
-            <label
-              htmlFor="password"
-              className="text-sm font-medium text-gray-100"
+          <div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "8px",
+              }}
             >
-              Password
-            </label>
-
+              <label
+                style={{
+                  color: "#94a3b8",
+                  fontSize: "11px",
+                  fontWeight: "600",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                Password
+              </label>
+              <Link
+                to="/forgot-password"
+                style={{
+                  color: "#818cf8",
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  textDecoration: "none",
+                }}
+                onMouseEnter={(e) => (e.target.style.color = "#a5b4fc")}
+                onMouseLeave={(e) => (e.target.style.color = "#818cf8")}
+              >
+                Forgot password?
+              </Link>
+            </div>
             <input
-              id="password"
               type="password"
               required
-              autoComplete="current-password"
-              placeholder=" ••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md bg-white/5 px-4 py-3 text-white outline outline-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:outline-indigo-500"
+              placeholder="••••••••"
+              style={inputStyle}
+              onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
+              onBlur={(e) => (e.target.style.borderColor = "#3f4659")}
             />
           </div>
 
-          {error && <p className="text-center text-sm text-red-400">{error}</p>}
+          {error && (
+            <div
+              style={{
+                background: "rgba(239,68,68,0.1)",
+                border: "1px solid rgba(239,68,68,0.2)",
+                borderRadius: "10px",
+                padding: "10px 14px",
+                color: "#fca5a5",
+                fontSize: "13px",
+                textAlign: "center",
+              }}
+            >
+              {error}
+            </div>
+          )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-md bg-indigo-500 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-400 disabled:opacity-50"
+            style={{
+              width: "100%",
+              background: loading ? "#4338ca" : "#4f46e5",
+              border: "none",
+              borderRadius: "12px",
+              color: "#fff",
+              fontSize: "14px",
+              fontWeight: "600",
+              padding: "14px",
+              cursor: loading ? "not-allowed" : "pointer",
+              opacity: loading ? 0.7 : 1,
+              marginTop: "4px",
+            }}
+            onMouseEnter={(e) => {
+              if (!loading) e.currentTarget.style.background = "#4338ca";
+            }}
+            onMouseLeave={(e) => {
+              if (!loading) e.currentTarget.style.background = "#4f46e5";
+            }}
           >
-            {loading ? "Logging in..." : "Log in"}
+            {loading ? "Signing in..." : "Sign in →"}
           </button>
         </form>
-
-        <p className="text-center text-sm text-gray-400">
-          No account?{" "}
-          <Link
-            to="/register"
-            className="font-semibold text-indigo-400 hover:text-indigo-300"
-          >
-            Register
-          </Link>
-        </p>
       </div>
     </div>
   );

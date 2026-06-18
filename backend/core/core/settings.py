@@ -13,6 +13,15 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME':  timedelta(minutes=15), 
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),   
+    'ROTATE_REFRESH_TOKENS':  True,               
+    'BLACKLIST_AFTER_ROTATION': True,                   
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
 
 load_dotenv()
 
@@ -138,9 +147,11 @@ STATIC_URL = 'static/'
 CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION _CLASS':(
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6,
 }
 
 AUTH_USER_MODEL = 'users.User'
@@ -148,3 +159,5 @@ AUTH_USER_MODEL = 'users.User'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",   
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
