@@ -17,6 +17,7 @@ export default function TeamTable({ teams, onDelete, onRefresh, canEdit, canDele
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+
   const handleRemoveMember = async (memberRowId) => {
     if (!window.confirm('Remove this member from the team?')) return
     setRemovingId(memberRowId)

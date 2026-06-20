@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
 import ForgotPassword from "./pages/ForgotPassword";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-
 import Teams from "./pages/Teams";
 import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
 import Documents from "./pages/Documents";
+import Error404 from "./pages/Error404";
+import Support from "./pages/Support";
 
 function PrivateRoute({ children }) {
   const isLoggedIn = !!localStorage.getItem("access_token");
@@ -50,6 +50,8 @@ function App() {
         </Route>
 
         <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Error404 />} />
+        <Route path="/support" element={<Support />} />
       </Routes>
     </BrowserRouter>
   );

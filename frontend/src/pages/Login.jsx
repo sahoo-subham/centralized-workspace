@@ -12,10 +12,13 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     setError("");
     setLoading(true);
+
     try {
       await login(email, password);
+
       navigate("/dashboard");
     } catch (err) {
       setError("Invalid email or password.");
@@ -28,201 +31,333 @@ export default function Login() {
     width: "100%",
     background: "#232938",
     border: "1px solid #3f4659",
-    borderRadius: "12px",
+    borderRadius: "14px",
     color: "#fff",
     fontSize: "14px",
-    padding: "13px 16px",
+    padding: "14px 16px",
     outline: "none",
     boxSizing: "border-box",
     fontFamily: "inherit",
+    transition: "all .25s ease",
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0f1117",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-      }}
-    >
+    <>
+      <style>
+        {`
+
+    @keyframes float1 {
+      0%,100%{
+        transform:translateY(0);
+      }
+      50%{
+        transform:translateY(35px);
+      }
+    }
+
+    @keyframes float2 {
+
+      0%,100%{
+        transform:translateY(0);
+      }
+
+      50%{
+        transform:translateY(-40px);
+      }
+
+    }
+
+    @keyframes pulseGlow {
+      0%,100%{
+        transform:scale(1);
+        box-shadow:
+        0 0 20px rgba(99,102,241,.4);
+
+      }
+
+      50%{
+
+        transform:scale(1.08);
+
+        box-shadow:
+        0 0 40px rgba(99,102,241,.8);
+
+      }
+
+    }
+
+    @keyframes cardFloat {
+
+      0%,100%{
+
+        transform:translateY(0);
+      }
+      50%{
+
+        transform:translateY(-8px);
+
+      }
+    }
+
+    `}
+      </style>
+
       <div
         style={{
-          width: "100%",
-          maxWidth: "420px",
-          background: "#1a1f2e",
-          border: "1px solid #2d3348",
-          borderRadius: "24px",
+          minHeight: "100vh",
+
+          background: `
+      radial-gradient(circle at top left,
+      rgba(99,102,241,.18),
+      transparent 35%),
+
+      radial-gradient(circle at bottom right,
+      rgba(168,85,247,.18),
+      transparent 35%),
+
+      #0f1117
+      `,
+
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "24px",
+          position: "relative",
           overflow: "hidden",
-          boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
         }}
       >
         <div
           style={{
-            background:
-              "linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 50%, rgba(99,102,241,0.25) 100%)",
-            borderBottom: "1px solid #2d3348",
-            padding: "32px",
-            textAlign: "center",
+            position: "absolute",
+            top: "-120px",
+            left: "-120px",
+            width: "350px",
+            height: "350px",
+            borderRadius: "50%",
+            background: "rgba(99,102,241,.25)",
+            filter: "blur(90px)",
+            animation: "float1 8s infinite",
+          }}
+        />
+
+        <div
+          style={{
+            position: "absolute",
+            bottom: "-120px",
+            right: "-120px",
+            width: "350px",
+            height: "350px",
+            borderRadius: "50%",
+            background: "rgba(168,85,247,.25)",
+            filter: "blur(90px)",
+            animation: "float2 10s infinite",
+          }}
+        />
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "420px",
+            background: "rgba(26,31,46,.75)",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,.08)",
+            borderRadius: "26px",
+            overflow: "hidden",
+            boxShadow: "0 30px 100px rgba(0,0,0,.6)",
+            animation: "cardFloat 5s infinite",
           }}
         >
+
           <div
             style={{
-              width: "56px",
-              height: "56px",
-              borderRadius: "16px",
-              background: "rgba(99,102,241,0.2)",
-              border: "1px solid rgba(99,102,241,0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "26px",
-              margin: "0 auto 16px",
+              padding: "35px",
+
+              textAlign: "center",
+
+              borderBottom: "1px solid #2d3348",
+
+              background:
+                "linear-gradient(135deg,rgba(99,102,241,.25),rgba(168,85,247,.15))",
             }}
           >
-            ⚡
-          </div>
-          <p
-            style={{
-              color: "#fff",
-              fontWeight: "700",
-              fontSize: "22px",
-              margin: 0,
-            }}
-          >
-            Centralized Workspace
-          </p>
-          <p style={{ color: "#94a3b8", fontSize: "13px", marginTop: "6px" }}>
-            Sign in to your account
-          </p>
-        </div>
-
-        <form
-          onSubmit={handleLogin}
-          style={{
-            padding: "32px",
-            display: "flex",
-            flexDirection: "column",
-            gap: "20px",
-          }}
-        >
-          <div>
-            <label
-              style={{
-                color: "#94a3b8",
-                fontSize: "11px",
-                fontWeight: "600",
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-                display: "block",
-                marginBottom: "8px",
-              }}
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              style={inputStyle}
-              onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
-              onBlur={(e) => (e.target.style.borderColor = "#3f4659")}
-            />
-          </div>
-
-          <div>
             <div
               style={{
+                width: "64px",
+                height: "64px",
+                borderRadius: "18px",
+                background: "rgba(99,102,241,.2)",
+                border: "1px solid rgba(99,102,241,.4)",
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "center",
                 alignItems: "center",
-                marginBottom: "8px",
+                margin: "0 auto 16px",
+                fontSize: "30px",
+                animation: "pulseGlow 2.5s infinite",
               }}
             >
+              ⚡
+            </div>
+
+            <h1
+              style={{
+                color: "#fff",
+                fontSize: "24px",
+                fontWeight: "800",
+                margin: 0,
+              }}
+            >
+              Centralized Workspace
+            </h1>
+
+            <p
+              style={{
+                color: "#94a3b8",
+                fontSize: "13px",
+                marginTop: "8px",
+              }}
+            >
+              Sign in to your account
+            </p>
+          </div>
+
+          <form
+            onSubmit={handleLogin}
+            style={{
+              padding: "32px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+            }}
+          >
+
+            <div>
               <label
                 style={{
                   color: "#94a3b8",
                   fontSize: "11px",
-                  fontWeight: "600",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
+                  fontWeight: "700",
+                  letterSpacing: "1px",
                 }}
               >
-                Password
+                EMAIL
               </label>
-              <Link
-                to="/forgot-password"
-                style={{
-                  color: "#818cf8",
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  textDecoration: "none",
-                }}
-                onMouseEnter={(e) => (e.target.style.color = "#a5b4fc")}
-                onMouseLeave={(e) => (e.target.style.color = "#818cf8")}
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              style={inputStyle}
-              onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
-              onBlur={(e) => (e.target.style.borderColor = "#3f4659")}
-            />
-          </div>
 
-          {error && (
-            <div
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                style={inputStyle}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#6366f1";
+
+                  e.target.style.boxShadow = "0 0 0 4px rgba(99,102,241,.15)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#3f4659";
+
+                  e.target.style.boxShadow = "none";
+                }}
+              />
+            </div>
+
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "8px",
+                }}
+              >
+                <label
+                  style={{
+                    color: "#94a3b8",
+                    fontSize: "11px",
+                    fontWeight: "700",
+                    letterSpacing: "1px",
+                  }}
+                >
+                  PASSWORD
+                </label>
+
+                <Link
+                  to="/forgot-password"
+                  style={{
+                    color: "#818cf8",
+                    fontSize: "12px",
+                  }}
+                >
+                  Forgot password?
+                </Link>
+              </div>
+
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                style={inputStyle}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#6366f1";
+
+                  e.target.style.boxShadow = "0 0 0 4px rgba(99,102,241,.15)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#3f4659";
+
+                  e.target.style.boxShadow = "none";
+                }}
+              />
+            </div>
+
+            {error && (
+              <div
+                style={{
+                  background: "rgba(239,68,68,.1)",
+                  border: "1px solid rgba(239,68,68,.2)",
+                  color: "#fca5a5",
+                  padding: "12px",
+                  borderRadius: "12px",
+                  textAlign: "center",
+                }}
+              >
+                {error}
+              </div>
+            )}
+
+            <button
+              disabled={loading}
+              type="submit"
               style={{
-                background: "rgba(239,68,68,0.1)",
-                border: "1px solid rgba(239,68,68,0.2)",
-                borderRadius: "10px",
-                padding: "10px 14px",
-                color: "#fca5a5",
-                fontSize: "13px",
-                textAlign: "center",
+                width: "100%",
+                padding: "15px",
+                borderRadius: "14px",
+                border: "none",
+                background: "#4f46e5",
+                color: "#fff",
+                fontWeight: "700",
+                cursor: loading ? "not-allowed" : "pointer",
+                transition: ".3s",
+                boxShadow: "0 15px 35px rgba(79,70,229,.4)",
+              }}
+              onMouseEnter={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.transform = "translateY(-3px)";
+                  e.currentTarget.style.background = "#4338ca";
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.background = "#4f46e5";
               }}
             >
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: "100%",
-              background: loading ? "#4338ca" : "#4f46e5",
-              border: "none",
-              borderRadius: "12px",
-              color: "#fff",
-              fontSize: "14px",
-              fontWeight: "600",
-              padding: "14px",
-              cursor: loading ? "not-allowed" : "pointer",
-              opacity: loading ? 0.7 : 1,
-              marginTop: "4px",
-            }}
-            onMouseEnter={(e) => {
-              if (!loading) e.currentTarget.style.background = "#4338ca";
-            }}
-            onMouseLeave={(e) => {
-              if (!loading) e.currentTarget.style.background = "#4f46e5";
-            }}
-          >
-            {loading ? "Signing in..." : "Sign in →"}
-          </button>
-        </form>
+              {loading ? "Signing in..." : "Sign in →"}
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

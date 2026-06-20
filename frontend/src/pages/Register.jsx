@@ -1,111 +1,91 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { register } from '../services/authService'
+import { useState } from "react";
+import { register } from "../services/authService";
 
 export default function Register({ onSuccess, onCancel }) {
-  const navigate = useNavigate()
-
-  const [name, setName]       = useState('')
-  const [email, setEmail]     = useState('')
-  const [password, setPassword] = useState('')
-  const [role, setRole]       = useState('member')
-  const [error, setError]     = useState('')
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState('')
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState("member");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    setError('')
-    setSuccess('')
+    setError("");
+    setSuccess("");
 
     if (!name || !email || !password) {
-      setError('All fields are required.')
-      return
+      setError("All fields are required.");
+      return;
     }
 
-    setLoading(true)
     try {
-      await register(name, email, password, role)
-      setSuccess('User created successfully!')
-
+      setLoading(true);
+      await register(name, email, password, role);
+      setSuccess("User created successfully!");
       if (onSuccess) {
-        setTimeout(() => onSuccess(), 1000)
+        setTimeout(() => onSuccess(), 1000);
       }
     } catch (err) {
-      const msg =
+      setError(
         err.response?.data?.email?.[0] ||
-        err.response?.data?.message ||
-        'Registration failed. Please try again.'
-      setError(msg)
+          err.response?.data?.message ||
+          "Registration failed. Please try again.",
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const inputStyle = {
-    width: '100%',
-    background: '#232938',
-    border: '1px solid #3f4659',
-    borderRadius: '12px',
-    color: '#fff',
-    fontSize: '14px',
-    padding: '13px 16px',
-    outline: 'none',
-    boxSizing: 'border-box',
-    fontFamily: 'inherit',
-  }
-
-  const formContent = (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-
+  const form = (
+    <div className="space-y-5">
       <div>
-        <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '8px' }}>
+        <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
           Full Name
         </label>
         <input
-          type="text" value={name}
+          value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="John Doe" style={inputStyle}
-          onFocus={e => e.target.style.borderColor = '#6366f1'}
-          onBlur={e => e.target.style.borderColor = '#3f4659'}
+          placeholder="John Doe"
+          className="mt-2 w-full rounded-xl bg-gray-800 border border-gray-700 px-4 py-3 text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
         />
       </div>
 
       <div>
-        <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '8px' }}>
+        <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
           Email
         </label>
         <input
-          type="email" value={email}
+          type="email"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com" style={inputStyle}
-          onFocus={e => e.target.style.borderColor = '#6366f1'}
-          onBlur={e => e.target.style.borderColor = '#3f4659'}
+          placeholder="you@example.com"
+          className="mt-2 w-full rounded-xl bg-gray-800 border border-gray-700 px-4 py-3 text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
         />
       </div>
 
       <div>
-        <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '8px' }}>
+        <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
           Password
         </label>
+
         <input
-          type="password" value={password}
+          type="password"
+          value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••" style={inputStyle}
-          onFocus={e => e.target.style.borderColor = '#6366f1'}
-          onBlur={e => e.target.style.borderColor = '#3f4659'}
+          placeholder="••••••••"
+          className="mt-2 w-full rounded-xl bg-gray-800 border border-gray-700 px-4 py-3 text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
         />
       </div>
 
       <div>
-        <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '8px' }}>
+        <label className="text-xs font-semibold uppercase tracking-wider text-gray-400">
           Role
         </label>
         <select
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          style={inputStyle}
-          onFocus={e => e.target.style.borderColor = '#6366f1'}
-          onBlur={e => e.target.style.borderColor = '#3f4659'}
+          className="mt-2 w-full rounded-xl bg-gray-800 border border-gray-700 px-4 py-3 text-white outline-none transition focus:border-indigo-500"
         >
           <option value="member">Member</option>
           <option value="team_lead">Team Lead</option>
@@ -114,101 +94,87 @@ export default function Register({ onSuccess, onCancel }) {
       </div>
 
       {error && (
-        <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px', padding: '10px 14px', color: '#fca5a5', fontSize: '13px' }}>
+        <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-300">
           {error}
         </div>
       )}
+
       {success && (
-        <div style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: '10px', padding: '10px 14px', color: '#86efac', fontSize: '13px' }}>
+        <div className="rounded-xl bg-green-500/10 border border-green-500/20 px-4 py-3 text-sm text-green-300">
           {success}
         </div>
       )}
 
-      <div style={{ display: 'flex', justifyContent: onSuccess ? 'flex-end' : 'stretch', gap: '12px', marginTop: '4px' }}>
+      <div className="flex justify-end gap-3 pt-4 border-t border-gray-700">
         {onCancel && (
           <button
             onClick={onCancel}
-            style={{ background: '#2d3348', border: '1px solid #3f4659', color: '#cbd5e1', fontSize: '14px', fontWeight: '500', padding: '11px 20px', borderRadius: '12px', cursor: 'pointer' }}
-            onMouseEnter={e => e.currentTarget.style.background = '#374151'}
-            onMouseLeave={e => e.currentTarget.style.background = '#2d3348'}
-          >Cancel</button>
+            className="px-5 py-3 rounded-xl bg-gray-800 border border-gray-700 text-gray-300 hover:bg-gray-700 hover:text-white transition"
+          >
+            Cancel
+          </button>
         )}
+
         <button
-          onClick={handleRegister} disabled={loading}
-          style={{
-            flex: onSuccess ? 'none' : 1,
-            background: loading ? '#4338ca' : '#4f46e5',
-            border: 'none', color: '#fff',
-            fontSize: '14px', fontWeight: '600',
-            padding: '11px 24px', borderRadius: '12px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            opacity: loading ? 0.7 : 1,
-          }}
-          onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#4338ca' }}
-          onMouseLeave={e => { if (!loading) e.currentTarget.style.background = '#4f46e5' }}
+          onClick={handleRegister}
+          disabled={loading}
+          className="px-6 py-3 rounded-xl bg-indigo-500 text-white font-semibold hover:bg-indigo-400 transition shadow-lg shadow-indigo-500/30 disabled:opacity-50"
         >
-          {loading ? 'Creating...' : 'Create Account →'}
+          {loading ? "Creating..." : "Create Account →"}
         </button>
       </div>
-
     </div>
-  )
+  );
 
   if (onSuccess) {
     return (
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: 50,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: 'rgba(0,0,0,0.70)', backdropFilter: 'blur(8px)', padding: '24px',
-      }}>
-        <div style={{
-          width: '100%', maxWidth: '460px',
-          borderRadius: '24px', border: '1px solid #2d3348',
-          background: '#1a1f2e', boxShadow: '0 30px 80px rgba(0,0,0,0.6)', overflow: 'hidden',
-        }}>
-
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 50%, rgba(99,102,241,0.25) 100%)',
-            borderBottom: '1px solid #2d3348', padding: '28px 32px',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <div style={{
-                width: '52px', height: '52px', borderRadius: '16px',
-                background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px',
-              }}>👤</div>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-6 animate-in fade-in duration-300">
+        <div className="w-full max-w-lg rounded-3xl bg-gray-900 border border-gray-700 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+          <div className="flex items-center justify-between p-7 border-b border-gray-700 bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-indigo-500/20">
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-3xl">
+                👤
+              </div>
               <div>
-                <p style={{ color: '#fff', fontWeight: '700', fontSize: '20px', margin: 0 }}>Register New Member</p>
-                <p style={{ color: '#94a3b8', fontSize: '13px', marginTop: '4px' }}>Create a new user account.</p>
+                <h2 className="text-xl font-bold text-white">
+                  Register New Member
+                </h2>
+
+                <p className="text-sm text-gray-400">
+                  Create a new user account.
+                </p>
               </div>
             </div>
+
             <button
               onClick={onCancel}
-              style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: 'none', color: '#94a3b8', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fff' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#94a3b8' }}
-            >✕</button>
+              className="h-9 w-9 rounded-xl bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white transition"
+            >
+              ✕
+            </button>
           </div>
 
-          <div style={{ padding: '28px 32px' }}>{formContent}</div>
+          <div className="p-7">{form}</div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0f1117', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-      <div style={{ width: '100%', maxWidth: '420px', background: '#1a1f2e', border: '1px solid #2d3348', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 30px 80px rgba(0,0,0,0.5)' }}>
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center px-6">
+      <div className="w-full max-w-md bg-gray-900 border border-gray-700 rounded-3xl shadow-2xl overflow-hidden">
+        <div className="p-8 text-center bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-indigo-500/20 border-b border-gray-700">
+          <div className="mx-auto h-16 w-16 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-3xl">
+            ⚡
+          </div>
 
-        <div style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 50%, rgba(99,102,241,0.25) 100%)', borderBottom: '1px solid #2d3348', padding: '32px', textAlign: 'center' }}>
-          <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '26px', margin: '0 auto 16px' }}>⚡</div>
-          <p style={{ color: '#fff', fontWeight: '700', fontSize: '22px', margin: 0 }}>Register New User</p>
-          <p style={{ color: '#94a3b8', fontSize: '13px', marginTop: '6px' }}>Admin access only</p>
+          <h1 className="mt-5 text-2xl font-bold text-white">
+            Register New User
+          </h1>
+          <p className="mt-2 text-sm text-gray-400">Admin access only</p>
         </div>
-
-        <div style={{ padding: '32px' }}>{formContent}</div>
+        <div className="p-8">{form}</div>
       </div>
     </div>
-  )
+  );
 }
