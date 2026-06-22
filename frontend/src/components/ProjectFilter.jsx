@@ -5,7 +5,7 @@ const STATUS_FILTERS = [
   { value: 'pending', label: 'Pending', icon: '⏳' },
   { value: 'active', label: 'Active', icon: '🟢' },
   { value: 'completed', label: 'Completed', icon: '✅' },
-  { value: 'on_hold', label: 'On Hold', icon: '⏸️' },
+  { value: 'on_hold', label: 'On Hold', icon: '⏸️' },  
 ]
 
 function ProjectFilter({ statusFilter, onFilterChange }) {
