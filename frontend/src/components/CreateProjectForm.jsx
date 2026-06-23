@@ -3,11 +3,10 @@ import api from '../services/api'
 
 function CreateProjectForm({ onCreated, onCancel }) {
   const [teams, setTeams]             = useState([])
-  const [projects, setProjects]       = useState([]) 
+  const [projects, setProjects]       = useState([])
   const [title, setTitle]             = useState('')
   const [description, setDescription] = useState('')
   const [team, setTeam]               = useState('')
-  const [status, setStatus]           = useState('pending')
   const [startDate, setStartDate]     = useState('')
   const [endDate, setEndDate]         = useState('')
   const [error, setError]             = useState('')
@@ -79,7 +78,7 @@ function CreateProjectForm({ onCreated, onCancel }) {
         title,
         description,
         team,
-        status,
+        status: 'pending', 
         start_date: startDate || null,
         end_date:   endDate   || null,
         created_by: user?.id,
@@ -159,7 +158,7 @@ function CreateProjectForm({ onCreated, onCancel }) {
               onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+          <div style={{ marginBottom: '20px' }}>
 
             <div style={{ position: 'relative' }}>
               <label style={labelStyle}>Team</label>
@@ -222,26 +221,30 @@ function CreateProjectForm({ onCreated, onCancel }) {
                         return (
                           <div
                             key={t.id}
-                            onClick={() => { setTeam(String(t.id)); setTeamSearch(''); setTeamDropdownOpen(false) }}
+                            onClick={() => {
+                              if (hasProject) return  
+                              setTeam(String(t.id)); setTeamSearch(''); setTeamDropdownOpen(false)
+                            }}
                             style={{
                               display: 'flex', alignItems: 'center', gap: '10px',
-                              padding: '10px 12px', borderRadius: '10px', cursor: 'pointer',
+                              padding: '10px 12px', borderRadius: '10px',
+                              cursor: hasProject ? 'not-allowed' : 'pointer',
                               background: parseInt(team) === t.id ? 'rgba(99,102,241,0.15)' : 'transparent',
-                              opacity: hasProject ? 0.7 : 1,
+                              opacity: hasProject ? 0.5 : 1,
                             }}
-                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.1)'}
-                            onMouseLeave={e => e.currentTarget.style.background = parseInt(team) === t.id ? 'rgba(99,102,241,0.15)' : 'transparent'}
+                            onMouseEnter={e => { if (!hasProject) e.currentTarget.style.background = 'rgba(99,102,241,0.1)' }}
+                            onMouseLeave={e => { e.currentTarget.style.background = parseInt(team) === t.id ? 'rgba(99,102,241,0.15)' : 'transparent' }}
                           >
                             <div style={folderIconStyle}>📁</div>
-                            <p style={{ color: '#e5e7eb', fontSize: '13px', fontWeight: '600', margin: 0, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            <p style={{ color: hasProject ? '#6b7280' : '#e5e7eb', fontSize: '13px', fontWeight: '600', margin: 0, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {t.team_name}
                             </p>
                             {hasProject && (
                               <span style={{
-                                background: 'rgba(245,158,11,0.15)', color: '#fcd34d',
+                                background: 'rgba(239,68,68,0.15)', color: '#fca5a5',
                                 fontSize: '10px', fontWeight: '700',
                                 padding: '2px 8px', borderRadius: '999px', whiteSpace: 'nowrap',
-                              }}>Has project</span>
+                              }}>Project assigned</span>
                             )}
                           </div>
                         )
@@ -252,16 +255,6 @@ function CreateProjectForm({ onCreated, onCancel }) {
               )}
             </div>
 
-            <div>
-              <label style={labelStyle}>Status</label>
-              <select value={status} onChange={(e) => setStatus(e.target.value)} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'}>
-                <option value="pending">Pending</option>
-                <option value="active">Active</option>
-                <option value="completed">Completed</option>
-                <option value="on_hold">On Hold</option>
-              </select>
-            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>

@@ -9,13 +9,10 @@ class TeamMiniSerializer(serializers.ModelSerializer):
         model = Team
         fields = ['id','team_name']
 
-
 class UserMiniSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','name','email']
-
-
 
 class ProjectSerializer(serializers.ModelSerializer):
     team_detail       = TeamMiniSerializer(source='team', read_only=True)
@@ -27,7 +24,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             'id', 'title', 'description',
             'team', 'team_detail',
             'status', 'start_date', 'end_date',
-            'created_by', 'created_by_detail',
+            'created_by', 'created_by_detail', 'is_active'
         ]
 
     def validate(self, data):

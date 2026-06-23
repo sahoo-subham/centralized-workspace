@@ -98,7 +98,7 @@ export default function AddMemberForm({ team, teams, onAdded, onCancel }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-lg p-5 animate-in fade-in duration-300">
       <div className="w-full max-w-xl rounded-3xl bg-gray-900 border border-gray-700 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-        <div className="flex items-center justify-between p-7 border-b border-gray-700 bg-gradient-to-br from-indigo-500/20 via-purple-500/10 to-indigo-500/20">
+        <div className="flex items-center justify-between p-7 border-b border-gray-700 bg-linear-to-br from-indigo-500/20 via-purple-500/10 to-indigo-500/20">
           <div className="flex items-center gap-4">
             <div className="h-14 w-14 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-3xl">
               👥
