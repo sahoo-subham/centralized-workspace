@@ -4,7 +4,7 @@ import api from '../services/api'
 export default function CreateTaskForm({ onCreated, onCancel }) {
 
   const [projects, setProjects]         = useState([])
-  const [teamMembers, setTeamMembers]   = useState([]) // members of selected project's team
+  const [teamMembers, setTeamMembers]   = useState([]) 
   const [title, setTitle]               = useState('')
   const [description, setDescription]   = useState('')
   const [project, setProject]           = useState('')
@@ -13,10 +13,31 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
   const [error, setError]               = useState('')
   const [loadingMembers, setLoadingMembers] = useState(false)
 
-  // fetch ALL projects across pages on mount
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+
   useEffect(() => {
     const fetchAllProjects = async () => {
       try {
+        let allTeams = []
+        let teamUrl = '/teams/?page=1'
+        while (teamUrl) {
+          const res = await api.get(teamUrl)
+          allTeams = [...allTeams, ...(res.data?.results ?? [])]
+          if (res.data?.next) {
+            const next = new URL(res.data.next)
+            teamUrl = `/teams/?${next.searchParams.toString()}`
+          } else {
+            teamUrl = null
+          }
+        }
+
+        const myTeamIds = allTeams
+          .filter((t) =>
+            t.members?.some((m) => m.user === currentUser.id) ||
+            t.created_by === currentUser.id
+          )
+          .map((t) => t.id)
+
         let combined = []
         let url = '/projects/?page=1'
         while (url) {
@@ -29,7 +50,12 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
             url = null
           }
         }
-        setProjects(combined)
+
+        const visible = currentUser.role === 'admin'
+          ? combined
+          : combined.filter((p) => myTeamIds.includes(p.team))
+
+        setProjects(visible)
       } catch (err) {
         console.error('Failed to fetch projects', err)
       }
@@ -37,7 +63,6 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
     fetchAllProjects()
   }, [])
 
-  // when project changes → fetch that project's team members
   useEffect(() => {
     if (!project) {
       setTeamMembers([])
@@ -48,7 +73,6 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
     const fetchTeamMembers = async () => {
       setLoadingMembers(true)
       try {
-        // find the selected project's team id from our already-fetched projects list
         const selectedProject = projects.find((p) => p.id === parseInt(project))
         const teamId = selectedProject?.team
 
@@ -57,11 +81,10 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
           return
         }
 
-        // fetch that specific team to get its members
         const res = await api.get(`/teams/${teamId}`)
         const members = res.data?.members ?? []
         setTeamMembers(members)
-        setAssignedTo('') // reset assignment when project changes
+        setAssignedTo('') 
       } catch (err) {
         console.error('Failed to fetch team members', err)
         setTeamMembers([])
@@ -88,8 +111,8 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
         project,
         assigned_to: assignedTo || null,
         created_by:  user?.id,
-        status:   'pending',  // always pending on create — change via Edit
-        priority: 'low',      // always low on create — change via Edit
+        status:   'pending',  
+        priority: 'low',      
         due_date: dueDate || null,
       })
       onCreated()
@@ -123,7 +146,6 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
         overflow: 'hidden', maxHeight: '90vh', overflowY: 'auto',
       }}>
 
-        {/* Header */}
         <div style={{
           background: 'linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 50%, rgba(99,102,241,0.25) 100%)',
           borderBottom: '1px solid #2d3348', padding: '28px 32px',
@@ -143,10 +165,8 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
           >✕</button>
         </div>
 
-        {/* Form */}
         <div style={{ padding: '28px 32px' }}>
 
-          {/* Title */}
           <div style={{ marginBottom: '20px' }}>
             <label style={labelStyle}>Task Title</label>
             <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
@@ -154,7 +174,6 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
               onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
           </div>
 
-          {/* Description */}
           <div style={{ marginBottom: '20px' }}>
             <label style={labelStyle}>Description</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)}
@@ -163,7 +182,6 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
               onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
           </div>
 
-          {/* Project */}
           <div style={{ marginBottom: '20px' }}>
             <label style={labelStyle}>Project</label>
             <select value={project} onChange={(e) => setProject(e.target.value)} style={inputStyle}
@@ -175,7 +193,6 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
             </select>
           </div>
 
-          {/* Assigned To — only shows members of selected project's team */}
           <div style={{ marginBottom: '20px' }}>
             <label style={labelStyle}>
               Assigned To
@@ -211,14 +228,12 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
             </select>
           </div>
 
-          {/* Due Date */}
           <div style={{ marginBottom: '20px' }}>
             <label style={labelStyle}>Due Date</label>
             <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} style={inputStyle}
               onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
           </div>
 
-          {/* Info note — status and priority set automatically */}
           <div style={{
             background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)',
             borderRadius: '12px', padding: '12px 16px', marginBottom: '20px',
@@ -231,14 +246,12 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
             </p>
           </div>
 
-          {/* Error */}
           {error && (
             <div style={{ marginBottom: '16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '12px', padding: '12px 16px', color: '#fca5a5', fontSize: '13px' }}>
               {error}
             </div>
           )}
 
-          {/* Buttons */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', paddingTop: '16px', borderTop: '1px solid #2d3348' }}>
             <button onClick={onCancel}
               style={{ background: '#2d3348', border: '1px solid #3f4659', color: '#cbd5e1', fontSize: '14px', fontWeight: '500', padding: '11px 20px', borderRadius: '12px', cursor: 'pointer' }}
@@ -255,4 +268,3 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
     </div>
   )
 }
-

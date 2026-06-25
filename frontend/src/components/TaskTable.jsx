@@ -1,8 +1,3 @@
-// components/TaskTable.jsx
-// Desktop → table view
-// Mobile  → card view (responsive)
-// Columns: Task | Project | Assigned To | Status | Priority | Due Date | Actions
-
 import { useState, useEffect } from 'react'
 import api from '../services/api'
 
@@ -18,7 +13,7 @@ const PRIORITY_STYLES = {
   high:   { bg: 'rgba(239,68,68,0.15)',  text: '#fca5a5', label: 'High' },
 }
 
-export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDelete }) {
+export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDelete, isMember }) {
 
   const [viewTask, setViewTask] = useState(null)
   const [editTask, setEditTask] = useState(null)
@@ -32,7 +27,6 @@ export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDele
 
   return (
     <>
-      {/* ── DESKTOP TABLE ───────────────────────────────── */}
       {!isMobile && (
       <div style={{
         background: '#1a1f2e', border: '1px solid #2d3348',
@@ -93,7 +87,7 @@ export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDele
                       <button onClick={() => setViewTask(task)} style={btnStyle('#4f46e5', '#fff')}
                         onMouseEnter={e => e.currentTarget.style.background = '#4338ca'} onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
                       >View</button>
-                      {canEdit && (
+                      {canEdit && !isMember && (
                         <button onClick={() => setEditTask(task)} style={btnStyle('#2d3348', '#cbd5e1')}
                           onMouseEnter={e => e.currentTarget.style.background = '#374151'} onMouseLeave={e => e.currentTarget.style.background = '#2d3348'}
                         >Edit</button>
@@ -114,7 +108,6 @@ export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDele
       </div>
       )}
 
-      {/* ── MOBILE CARDS ────────────────────────────────── */}
       {isMobile && (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {tasks.map((task) => {
@@ -151,7 +144,7 @@ export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDele
 
               <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
                 <button onClick={() => setViewTask(task)} style={{ ...btnStyle('#4f46e5', '#fff'), flex: 1 }}>View</button>
-                {canEdit && <button onClick={() => setEditTask(task)} style={{ ...btnStyle('#2d3348', '#cbd5e1'), flex: 1 }}>Edit</button>}
+                {canEdit && !isMember && <button onClick={() => setEditTask(task)} style={{ ...btnStyle('#2d3348', '#cbd5e1'), flex: 1 }}>Edit</button>}
                 {canDelete && <button onClick={() => onDelete(task.id)} style={{ ...btnStyle('#2d3348', '#f87171'), flex: 1 }}>Delete</button>}
               </div>
             </div>
@@ -160,7 +153,6 @@ export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDele
       </div>
       )}
 
-      {/* ── VIEW MODAL ───────────────────────────────────── */}
       {viewTask && (
         <div style={overlayStyle}>
           <div style={modalStyle}>
@@ -237,7 +229,6 @@ export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDele
         </div>
       )}
 
-      {/* ── EDIT MODAL ───────────────────────────────────── */}
       {editTask && (
         <EditTaskModal task={editTask} onClose={() => setEditTask(null)} onSaved={() => { setEditTask(null); onRefresh() }} />
       )}
@@ -251,26 +242,27 @@ function EditTaskModal({ task, onClose, onSaved }) {
   const [status, setStatus]           = useState(task.status)
   const [priority, setPriority]       = useState(task.priority)
   const [dueDate, setDueDate]         = useState(task.due_date || '')
-  const [users, setUsers]             = useState([])
-  const [assignedTo, setAssignedTo]   = useState(task.assigned_to || '')
   const [saving, setSaving]           = useState(false)
 
-  useEffect(() => {
-    api.get('/users/').then(res => setUsers(res.data?.results ?? [])).catch(console.error)
-  }, [])
+  const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
+  const isMember    = currentUser.role === 'member'
 
   const handleSave = async () => {
     if (!title.trim()) return
     setSaving(true)
     try {
-      await api.put(`/tasks/${task.id}/`, {
-        title, description,
-        project: task.project,
-        assigned_to: assignedTo || null,
-        created_by: task.created_by,
-        status, priority,
-        due_date: dueDate || null,
-      })
+      if (isMember) {
+        await api.patch(`/tasks/${task.id}/`, { status })
+      } else {
+        await api.put(`/tasks/${task.id}/`, {
+          title, description,
+          project:     task.project,
+          assigned_to: task.assigned_to,  
+          created_by:  task.created_by,
+          status, priority,
+          due_date: dueDate || null,
+        })
+      }
       onSaved()
     } catch (err) {
       console.error('Failed to update task', err)
@@ -293,7 +285,9 @@ function EditTaskModal({ task, onClose, onSaved }) {
             <div style={iconBoxStyle}>✏️</div>
             <div>
               <p style={{ color: '#fff', fontWeight: '700', fontSize: '20px', margin: 0 }}>Edit Task</p>
-              <p style={{ color: '#94a3b8', fontSize: '13px', marginTop: '4px' }}>Update task details.</p>
+              <p style={{ color: '#94a3b8', fontSize: '13px', marginTop: '4px' }}>
+                {isMember ? 'Update task status only.' : 'Update task details.'}
+              </p>
             </div>
           </div>
           <button onClick={onClose} style={closeBtnStyle}
@@ -303,41 +297,36 @@ function EditTaskModal({ task, onClose, onSaved }) {
         </div>
 
         <div style={{ padding: '28px 32px' }}>
-          <div style={{ marginBottom: '20px' }}>
-            <label style={labelStyle}>Title</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} style={inputStyle}
-              onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
-          </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={labelStyle}>Description</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3}
-              style={{ ...inputStyle, resize: 'none', lineHeight: '1.6' }}
-              onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-            <div>
-              <label style={labelStyle}>Assigned To</label>
-              <select value={assignedTo} onChange={(e) => setAssignedTo(e.target.value)} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'}>
-                <option value="">Unassigned</option>
-                {users.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
-              </select>
+          {!isMember && (
+            <div style={{ marginBottom: '20px' }}>
+              <label style={labelStyle}>Title</label>
+              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} style={inputStyle}
+                onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
             </div>
-            <div>
-              <label style={labelStyle}>Status</label>
-              <select value={status} onChange={(e) => setStatus(e.target.value)} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'}>
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
-                <option value="completed">Completed</option>
-              </select>
+          )}
+
+          {!isMember && (
+            <div style={{ marginBottom: '20px' }}>
+              <label style={labelStyle}>Description</label>
+              <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3}
+                style={{ ...inputStyle, resize: 'none', lineHeight: '1.6' }}
+                onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
             </div>
+          )}
+
+          <div style={{ marginBottom: '20px' }}>
+            <label style={labelStyle}>Status</label>
+            <select value={status} onChange={(e) => setStatus(e.target.value)} style={inputStyle}
+              onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'}>
+              <option value="pending">Pending</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '28px' }}>
-            <div>
+          {!isMember && (
+            <div style={{ marginBottom: '20px' }}>
               <label style={labelStyle}>Priority</label>
               <select value={priority} onChange={(e) => setPriority(e.target.value)} style={inputStyle}
                 onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'}>
@@ -346,12 +335,15 @@ function EditTaskModal({ task, onClose, onSaved }) {
                 <option value="high">High</option>
               </select>
             </div>
-            <div>
+          )}
+
+          {!isMember && (
+            <div style={{ marginBottom: '28px' }}>
               <label style={labelStyle}>Due Date</label>
               <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} style={inputStyle}
                 onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
             </div>
-          </div>
+          )}
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', paddingTop: '20px', borderTop: '1px solid #2d3348' }}>
             <button onClick={onClose}
