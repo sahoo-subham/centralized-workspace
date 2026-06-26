@@ -65,8 +65,6 @@ centralized-workspace/
         ├── services/               # Axios API calls
         ├── routes/                 # Protected & public routes
         ├── hooks/                  # Custom React hooks
-        ├── layouts/                # Page layouts (sidebar, header)
-        ├── utils/                  # Helper functions
         ├── redux/                  # State management
         ├── App.jsx
         └── main.jsx
