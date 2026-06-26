@@ -13,7 +13,7 @@ const PRIORITY_STYLES = {
   high:   { bg: 'rgba(239,68,68,0.15)',  text: '#fca5a5', label: 'High' },
 }
 
-export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDelete, isMember }) {
+export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDelete, isMember, canEditStatus }) {
 
   const [viewTask, setViewTask] = useState(null)
   const [editTask, setEditTask] = useState(null)
@@ -87,7 +87,7 @@ export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDele
                       <button onClick={() => setViewTask(task)} style={btnStyle('#4f46e5', '#fff')}
                         onMouseEnter={e => e.currentTarget.style.background = '#4338ca'} onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
                       >View</button>
-                      {canEdit && !isMember && (
+                      {(canEdit || canEditStatus) && (
                         <button onClick={() => setEditTask(task)} style={btnStyle('#2d3348', '#cbd5e1')}
                           onMouseEnter={e => e.currentTarget.style.background = '#374151'} onMouseLeave={e => e.currentTarget.style.background = '#2d3348'}
                         >Edit</button>
@@ -144,7 +144,7 @@ export default function TaskTable({ tasks, onDelete, onRefresh, canEdit, canDele
 
               <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
                 <button onClick={() => setViewTask(task)} style={{ ...btnStyle('#4f46e5', '#fff'), flex: 1 }}>View</button>
-                {canEdit && !isMember && <button onClick={() => setEditTask(task)} style={{ ...btnStyle('#2d3348', '#cbd5e1'), flex: 1 }}>Edit</button>}
+                {(canEdit || canEditStatus) && <button onClick={() => setEditTask(task)} style={{ ...btnStyle('#2d3348', '#cbd5e1'), flex: 1 }}>Edit</button>}
                 {canDelete && <button onClick={() => onDelete(task.id)} style={{ ...btnStyle('#2d3348', '#f87171'), flex: 1 }}>Delete</button>}
               </div>
             </div>

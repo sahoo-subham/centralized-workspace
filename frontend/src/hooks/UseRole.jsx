@@ -12,6 +12,9 @@ export function useRole() {
 
     canDelete: role === 'admin',
 
+    canEditStatus: role === 'member',
+
     canCreateTeam: role === 'admin',
+
   }
 }

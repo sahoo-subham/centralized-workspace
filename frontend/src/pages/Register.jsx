@@ -89,7 +89,6 @@ export default function Register({ onSuccess, onCancel }) {
         >
           <option value="member">Member</option>
           <option value="team_lead">Team Lead</option>
-          <option value="admin">Admin</option>
         </select>
       </div>
 

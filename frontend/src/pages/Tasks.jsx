@@ -7,7 +7,7 @@ import { useRole }    from '../hooks/useRole'
 
 function Tasks() {
 
-  const { canEdit, canDelete, isAdmin, isTeamLead, isMember } = useRole()
+  const { canEdit, canDelete, isAdmin, isTeamLead, isMember, canEditStatus } = useRole()
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
 
   const [allTasks, setAllTasks]   = useState([])
@@ -196,6 +196,7 @@ function Tasks() {
             canEdit={canEdit}
             canDelete={canDelete}
             isMember={isMember}
+            canEditStatus={canEditStatus}
           />
 
           {totalPages > 1 && (
