@@ -107,7 +107,7 @@ const Error404 = () => {
         text-[120px]
         leading-none
         font-black
-        bg-gradient-to-r
+        bg-linear-to-r
         from-indigo-400
         via-purple-400
         to-pink-400

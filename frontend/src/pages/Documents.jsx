@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from 'react'
 import api from '../services/api'
 import UploadDocumentForm from '../components/UploadDocumentForm'
+import DocumentFilter     from '../components/DocumentFilter'
 import { useRole }        from '../hooks/useRole'
 
-// file type icon helper
 const getFileIcon = (filename) => {
   if (!filename) return '📄'
   const ext = filename.split('.').pop().toLowerCase()
@@ -19,21 +18,24 @@ const getFileIcon = (filename) => {
 
 function Documents() {
 
-  const { canEdit, canDelete, isAdmin } = useRole()
+  const { canEdit, canDelete, isAdmin, isMember } = useRole()
   const currentUser = JSON.parse(localStorage.getItem('user') || '{}')
 
   const [allDocs, setAllDocs]   = useState([])
   const [loading, setLoading]   = useState(true)
   const [showForm, setShowForm] = useState(false)
 
-  // filters
   const [projectFilter, setProjectFilter]   = useState('')
   const [typeFilter, setTypeFilter]         = useState('')
   const [searchFilter, setSearchFilter]     = useState('')
-
-  // pagination
+ 
   const [page, setPage]   = useState(1)
   const [pageSize]        = useState(6)
+
+  const anyFilterActive =
+  projectFilter ||
+  typeFilter ||
+  searchFilter;
 
   const fetchAllDocs = async () => {
     setLoading(true)
@@ -68,7 +70,6 @@ function Documents() {
     }
   }
 
-  // filters
   const afterProject = projectFilter
     ? allDocs.filter((d) => d.project === parseInt(projectFilter))
     : allDocs
@@ -81,7 +82,6 @@ function Documents() {
     ? afterType.filter((d) => d.title?.toLowerCase().includes(searchFilter.toLowerCase()))
     : afterType
 
-  // pagination
   const totalPages  = Math.ceil(filteredDocs.length / pageSize)
   const pagedDocs   = filteredDocs.slice((page - 1) * pageSize, page * pageSize)
 
@@ -91,7 +91,6 @@ function Documents() {
     if (totalPages === 0) setPage(1)
   }, [totalPages])
 
-  // unique projects and types from loaded docs for filter dropdowns
   const projectsForFilter = Array.from(
     new Map(allDocs.map((d) => [d.project, d.project_detail])).entries()
   ).map(([id, detail]) => ({ id, title: detail?.title ?? `Project ${id}` }))
@@ -100,18 +99,9 @@ function Documents() {
     new Map(allDocs.filter((d) => d.document_type).map((d) => [d.document_type, d.document_type_detail])).entries()
   ).map(([id, detail]) => ({ id, name: detail?.name ?? `Type ${id}` }))
 
-  const anyFilterActive = projectFilter || typeFilter || searchFilter
-
-  const selectStyle = {
-    background: '#232938', border: '1px solid #3f4659',
-    borderRadius: '12px', color: '#fff', fontSize: '14px',
-    padding: '11px 16px', outline: 'none', cursor: 'pointer', fontFamily: 'inherit',
-  }
-
   return (
     <div className="w-full px-8 py-8 bg-gray-900 min-h-screen">
 
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-white tracking-tight">Documents</h1>
@@ -119,67 +109,26 @@ function Documents() {
             {isAdmin ? 'Manage all documents' : 'Your team documents'}
           </p>
         </div>
-        {canEdit && (
-          <button
-            onClick={() => setShowForm(true)}
-            style={{ background: '#4f46e5', border: 'none', color: '#fff', fontSize: '14px', fontWeight: '600', padding: '10px 20px', borderRadius: '10px', cursor: 'pointer' }}
-            onMouseEnter={e => e.currentTarget.style.background = '#4338ca'}
-            onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
-          >+ Upload Document</button>
-        )}
+        <button
+          onClick={() => setShowForm(true)}
+          style={{ background: '#4f46e5', border: 'none', color: '#fff', fontSize: '14px', fontWeight: '600', padding: '10px 20px', borderRadius: '10px', cursor: 'pointer' }}
+          onMouseEnter={e => e.currentTarget.style.background = '#4338ca'}
+          onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
+        >+ Upload Document</button>
       </div>
 
-      {/* Filters */}
-      <div style={{ display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+      <DocumentFilter
+        projects={projectsForFilter}
+        docTypes={typesForFilter}
+        searchFilter={searchFilter}
+        projectFilter={projectFilter}
+        typeFilter={typeFilter}
+        onSearchChange={setSearchFilter}
+        onProjectChange={setProjectFilter}
+        onTypeChange={setTypeFilter}
+        onClear={() => { setProjectFilter(''); setTypeFilter(''); setSearchFilter('') }}
+      />
 
-        {/* Search */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Search</label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#232938', border: '1px solid #3f4659', borderRadius: '12px', padding: '11px 16px', minWidth: '200px' }}>
-            <span style={{ color: '#6b7280' }}>🔍</span>
-            <input
-              value={searchFilter}
-              onChange={(e) => setSearchFilter(e.target.value)}
-              placeholder="Search by title..."
-              style={{ background: 'transparent', border: 'none', outline: 'none', color: '#fff', fontSize: '14px', fontFamily: 'inherit', flex: 1 }}
-            />
-          </div>
-        </div>
-
-        {/* Project filter */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Filter by Project</label>
-          <select value={projectFilter} onChange={(e) => setProjectFilter(e.target.value)}
-            style={{ ...selectStyle, minWidth: '180px' }}
-            onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'}>
-            <option value="">All Projects</option>
-            {projectsForFilter.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
-          </select>
-        </div>
-
-        {/* Type filter */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ color: '#94a3b8', fontSize: '11px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Filter by Type</label>
-          <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}
-            style={{ ...selectStyle, minWidth: '180px' }}
-            onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'}>
-            <option value="">All Types</option>
-            {typesForFilter.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-          </select>
-        </div>
-
-        {/* Clear */}
-        {anyFilterActive && (
-          <button
-            onClick={() => { setProjectFilter(''); setTypeFilter(''); setSearchFilter('') }}
-            style={{ background: 'transparent', border: '1px solid #3f4659', color: '#94a3b8', fontSize: '13px', fontWeight: '500', padding: '11px 16px', borderRadius: '12px', cursor: 'pointer' }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = '#f87171'; e.currentTarget.style.color = '#f87171' }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = '#3f4659'; e.currentTarget.style.color = '#94a3b8' }}
-          >✕ Clear</button>
-        )}
-      </div>
-
-      {/* Upload Modal */}
       {showForm && (
         <UploadDocumentForm
           onUploaded={() => { setShowForm(false); fetchAllDocs() }}
@@ -187,7 +136,6 @@ function Documents() {
         />
       )}
 
-      {/* Documents Table */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <p className="text-gray-400 text-sm">Loading documents...</p>
@@ -257,7 +205,6 @@ function Documents() {
                     </td>
                     <td style={{ ...tdStyle, textAlign: 'right' }}>
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                        {/* View/Download */}
                         {doc.file_url && (
                           <a href={doc.file_url} target="_blank" rel="noreferrer"
                             style={{ background: '#4f46e5', border: 'none', color: '#fff', fontSize: '12px', fontWeight: '600', padding: '7px 16px', borderRadius: '8px', cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
@@ -265,7 +212,6 @@ function Documents() {
                             onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
                           >⬇ View</a>
                         )}
-                        {/* Delete */}
                         {canDelete && (
                           <button onClick={() => handleDelete(doc.id)}
                             style={{ background: '#2d3348', border: 'none', color: '#f87171', fontSize: '12px', fontWeight: '600', padding: '7px 16px', borderRadius: '8px', cursor: 'pointer' }}

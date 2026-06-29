@@ -1,6 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.permissions import IsAuthenticated
 from .models import Document, DocumentType
 from .serializers import DocumentSerializer, DocumentTypeSerializer
 from teams.permissions import IsAdminOrTeamLeadOrReadOnly, IsAdminOrReadOnly
@@ -12,6 +13,7 @@ class DocumentTypeListCreateView(generics.ListCreateAPIView):
     serializer_class   = DocumentTypeSerializer
     permission_classes = [IsAdminOrReadOnly]
 
+
 class DocumentTypeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset           = DocumentType.objects.all()
     serializer_class   = DocumentTypeSerializer
@@ -19,23 +21,26 @@ class DocumentTypeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVie
 
 class DocumentListCreateView(generics.ListCreateAPIView):
     serializer_class   = DocumentSerializer
-    permission_classes = [IsAdminOrTeamLeadOrReadOnly]
     parser_classes     = [MultiPartParser, FormParser]
 
-    def get_queryset(self): 
+    def get_permissions(self):
+        return [IsAuthenticated()]
+
+    def get_queryset(self):
         user = self.request.user
         base = Document.objects.filter(is_active=True)
 
         if user.role == 'admin':
             return base.order_by('-uploaded_at')
-
+        
         return base.filter(
             Q(project__team__members__user=user) |
             Q(project__team__created_by=user)
         ).distinct().order_by('-uploaded_at')
 
     def perform_create(self, serializer):
-        serializer.save(uploaded_by=self.request.user)
+        serializer.save(uploaded_by=self.request.user, is_active=True)
+
 
 class DocumentRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     queryset           = Document.objects.filter(is_active=True)

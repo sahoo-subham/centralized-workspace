@@ -21,6 +21,24 @@ export default function UploadDocumentForm({ onUploaded, onCancel }) {
 
   const fetchProjects = async () => {
     try {
+      let allTeams = []
+      let teamUrl = '/teams/?page=1'
+      while (teamUrl) {
+        const res = await api.get(teamUrl)
+        allTeams = [...allTeams, ...(res.data?.results ?? [])]
+        if (res.data?.next) {
+          const next = new URL(res.data.next)
+          teamUrl = `/teams/?${next.searchParams.toString()}`
+        } else teamUrl = null
+      }
+
+      const myTeamIds = allTeams
+        .filter((t) =>
+          t.members?.some((m) => m.user === currentUser.id) ||
+          t.created_by === currentUser.id
+        )
+        .map((t) => t.id)
+
       let combined = []
       let url = '/projects/?page=1'
       while (url) {
@@ -31,8 +49,12 @@ export default function UploadDocumentForm({ onUploaded, onCancel }) {
           url = `/projects/?${next.searchParams.toString()}`
         } else url = null
       }
-      // filter by user's teams if not admin
-      setProjects(combined)
+
+      const visible = currentUser.role === 'admin'
+        ? combined
+        : combined.filter((p) => myTeamIds.includes(p.team))
+
+      setProjects(visible)
     } catch (err) {
       console.error('Failed to fetch projects', err)
     }
@@ -40,8 +62,18 @@ export default function UploadDocumentForm({ onUploaded, onCancel }) {
 
   const fetchDocTypes = async () => {
     try {
-      const res = await api.get('/document-types/')
-      setDocTypes(res.data?.results ?? res.data ?? [])
+      let combined = []
+      let url = '/document-types/'
+      while (url) {
+        const res = await api.get(url)
+        const results = res.data?.results ?? res.data ?? []
+        combined = [...combined, ...results]
+        if (res.data?.next) {
+          const next = new URL(res.data.next)
+          url = `/document-types/?${next.searchParams.toString()}`
+        } else url = null
+      }
+      setDocTypes(combined)
     } catch (err) {
       console.error('Failed to fetch document types', err)
     }
@@ -98,7 +130,6 @@ export default function UploadDocumentForm({ onUploaded, onCancel }) {
         boxShadow: '0 30px 80px rgba(0,0,0,0.6)', overflow: 'hidden',
       }}>
 
-        {/* Header */}
         <div style={{
           background: 'linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 50%, rgba(99,102,241,0.25) 100%)',
           borderBottom: '1px solid #2d3348', padding: '28px 32px',
@@ -118,10 +149,8 @@ export default function UploadDocumentForm({ onUploaded, onCancel }) {
           >✕</button>
         </div>
 
-        {/* Form */}
         <div style={{ padding: '28px 32px' }}>
 
-          {/* Title */}
           <div style={{ marginBottom: '20px' }}>
             <label style={labelStyle}>Document Title</label>
             <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
@@ -129,7 +158,6 @@ export default function UploadDocumentForm({ onUploaded, onCancel }) {
               onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
           </div>
 
-          {/* Project + Document Type */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
             <div>
               <label style={labelStyle}>Project</label>
@@ -149,7 +177,6 @@ export default function UploadDocumentForm({ onUploaded, onCancel }) {
             </div>
           </div>
 
-          {/* File Upload */}
           <div style={{ marginBottom: '20px' }}>
             <label style={labelStyle}>File</label>
             <div
@@ -188,14 +215,12 @@ export default function UploadDocumentForm({ onUploaded, onCancel }) {
             />
           </div>
 
-          {/* Error */}
           {error && (
             <div style={{ marginBottom: '16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '12px', padding: '12px 16px', color: '#fca5a5', fontSize: '13px' }}>
               {error}
             </div>
           )}
 
-          {/* Buttons */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', paddingTop: '16px', borderTop: '1px solid #2d3348' }}>
             <button onClick={onCancel}
               style={{ background: '#2d3348', border: '1px solid #3f4659', color: '#cbd5e1', fontSize: '14px', fontWeight: '500', padding: '11px 20px', borderRadius: '12px', cursor: 'pointer' }}

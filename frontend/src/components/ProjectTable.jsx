@@ -434,3 +434,4 @@ const labelStyle = {
   textTransform: 'uppercase', letterSpacing: '0.08em',
   display: 'block', marginBottom: '10px',
 }
+

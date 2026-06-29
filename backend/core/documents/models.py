@@ -13,9 +13,9 @@ class Document(models.Model):
     document_type = models.ForeignKey(DocumentType, on_delete=models.SET_NULL, null=True, blank=True, related_name='documents')
     uploaded_by   = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='documents')
     title         = models.CharField(max_length=255)
-    file          = models.FileField(upload_to='documents/')
+    file          = models.FileField(upload_to='documents/', null=True, blank=True)
     uploaded_at   = models.DateTimeField(auto_now_add=True)
     is_active     = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.title
+        return self.title                                                       
