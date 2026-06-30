@@ -2,19 +2,9 @@ import { useState, useEffect } from 'react'
 import api from '../services/api'
 import UploadDocumentForm from '../components/UploadDocumentForm'
 import DocumentFilter     from '../components/DocumentFilter'
+import DocumentTable      from '../components/DocumentTable'
 import { useRole }        from '../hooks/useRole'
 
-const getFileIcon = (filename) => {
-  if (!filename) return '📄'
-  const ext = filename.split('.').pop().toLowerCase()
-  if (['pdf'].includes(ext))                    return '📕'
-  if (['doc', 'docx'].includes(ext))            return '📝'
-  if (['xls', 'xlsx'].includes(ext))            return '📊'
-  if (['ppt', 'pptx'].includes(ext))            return '📊'
-  if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) return '🖼️'
-  if (['zip', 'rar'].includes(ext))             return '🗜️'
-  return '📄'
-}
 
 function Documents() {
 
@@ -28,14 +18,9 @@ function Documents() {
   const [projectFilter, setProjectFilter]   = useState('')
   const [typeFilter, setTypeFilter]         = useState('')
   const [searchFilter, setSearchFilter]     = useState('')
- 
+
   const [page, setPage]   = useState(1)
   const [pageSize]        = useState(6)
-
-  const anyFilterActive =
-  projectFilter ||
-  typeFilter ||
-  searchFilter;
 
   const fetchAllDocs = async () => {
     setLoading(true)
@@ -146,86 +131,17 @@ function Documents() {
           <span className="text-4xl mb-3">📄</span>
           <p className="text-gray-300 font-medium">No documents found</p>
           <p className="text-gray-500 text-sm mt-1">
-            {anyFilterActive ? 'Try adjusting your filters' : 'Click "+ Upload Document" to get started'}
+            {(projectFilter || typeFilter || searchFilter) ? 'Try adjusting your filters' : 'Click "+ Upload Document" to get started'}
           </p>
         </div>
 
       ) : (
         <>
-          <div style={{
-            background: '#1a1f2e', border: '1px solid #2d3348',
-            borderRadius: '16px', overflow: 'hidden',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
-          }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 100%)' }}>
-                  <th style={thStyle}>Document</th>
-                  <th style={thStyle}>Project</th>
-                  <th style={thStyle}>Type</th>
-                  <th style={thStyle}>Uploaded By</th>
-                  <th style={thStyle}>Date</th>
-                  <th style={{ ...thStyle, textAlign: 'right' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pagedDocs.map((doc, i) => (
-                  <tr key={doc.id}
-                    style={{ borderTop: i === 0 ? 'none' : '1px solid #2d3348', transition: 'background 0.15s' }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.04)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <td style={tdStyle}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(99,102,241,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
-                          {getFileIcon(doc.file)}
-                        </div>
-                        <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{doc.title}</span>
-                      </div>
-                    </td>
-                    <td style={tdStyle}>
-                      <span style={{ color: '#9ca3af', fontSize: '13px' }}>{doc.project_detail?.title || '—'}</span>
-                    </td>
-                    <td style={tdStyle}>
-                      {doc.document_type_detail ? (
-                        <span style={{ background: 'rgba(99,102,241,0.15)', color: '#a5b4fc', fontSize: '11px', fontWeight: '700', padding: '3px 10px', borderRadius: '999px' }}>
-                          {doc.document_type_detail.name}
-                        </span>
-                      ) : (
-                        <span style={{ color: '#4b5563', fontSize: '13px' }}>—</span>
-                      )}
-                    </td>
-                    <td style={tdStyle}>
-                      <span style={{ color: '#9ca3af', fontSize: '13px' }}>{doc.uploaded_by_detail?.name || '—'}</span>
-                    </td>
-                    <td style={tdStyle}>
-                      <span style={{ color: '#9ca3af', fontSize: '12px' }}>
-                        {doc.uploaded_at ? new Date(doc.uploaded_at).toLocaleDateString() : '—'}
-                      </span>
-                    </td>
-                    <td style={{ ...tdStyle, textAlign: 'right' }}>
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                        {doc.file_url && (
-                          <a href={doc.file_url} target="_blank" rel="noreferrer"
-                            style={{ background: '#4f46e5', border: 'none', color: '#fff', fontSize: '12px', fontWeight: '600', padding: '7px 16px', borderRadius: '8px', cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                            onMouseEnter={e => e.currentTarget.style.background = '#4338ca'}
-                            onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
-                          >⬇ View</a>
-                        )}
-                        {canDelete && (
-                          <button onClick={() => handleDelete(doc.id)}
-                            style={{ background: '#2d3348', border: 'none', color: '#f87171', fontSize: '12px', fontWeight: '600', padding: '7px 16px', borderRadius: '8px', cursor: 'pointer' }}
-                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; e.currentTarget.style.color = '#fca5a5' }}
-                            onMouseLeave={e => { e.currentTarget.style.background = '#2d3348'; e.currentTarget.style.color = '#f87171' }}
-                          >Delete</button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DocumentTable
+            documents={pagedDocs}
+            onDelete={handleDelete}
+            canDelete={canDelete}
+          />
 
           {totalPages > 1 && (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', marginTop: '32px' }}>
@@ -250,8 +166,5 @@ function Documents() {
     </div>
   )
 }
-
-const thStyle = { textAlign: 'left', padding: '16px 20px', color: '#94a3b8', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em' }
-const tdStyle = { padding: '16px 20px', fontSize: '14px' }
 
 export default Documents
