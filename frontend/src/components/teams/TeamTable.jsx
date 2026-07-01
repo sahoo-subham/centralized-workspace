@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import api from '../services/api'
+import api from '../../services/api'
 import AddMemberForm from './AddMemberForm'
 
 export default function TeamTable({ teams, onDelete, onRefresh, canEdit, canDelete }) {

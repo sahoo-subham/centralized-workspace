@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import api from '../services/api'
-import CreateTaskForm from '../components/CreateTaskForm'
-import TaskTable      from '../components/TaskTable'
-import TaskFilter     from '../components/TaskFilter'
+import api from "../services/api";
+import CreateTaskForm from "../components/tasks/CreateTaskForm";
+import TaskTable from "../components/tasks/TaskTable";
+import TaskFilter     from '../components/tasks/TaskFilter'
 import { useRole }    from '../hooks/useRole'
 
 function Tasks() {

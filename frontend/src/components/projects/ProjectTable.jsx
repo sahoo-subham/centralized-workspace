@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import api from '../services/api'
+import api from '../../services/api'
 
 const STATUS_STYLES = {
   pending:   { bg: 'rgba(156,163,175,0.15)', text: '#d1d5db', label: 'Pending' },

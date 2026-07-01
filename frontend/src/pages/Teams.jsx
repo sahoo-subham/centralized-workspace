@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import api from '../services/api'
-import CreateTeamForm from '../components/CreateTeamForm'
-import TeamTable      from '../components/TeamTable'
-import TeamFilter     from '../components/TeamFilter'
+import CreateTeamForm from '../components/teams/CreateTeamForm'
+import TeamTable      from '../components/teams/TeamTable'
+import TeamFilter     from '../components/teams/TeamFilter'
 import Register       from './Register'
 import { useRole }    from '../hooks/useRole'
 

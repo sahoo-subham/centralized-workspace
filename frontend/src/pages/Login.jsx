@@ -12,13 +12,10 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     setError("");
     setLoading(true);
-
     try {
       await login(email, password);
-
       navigate("/dashboard");
     } catch (err) {
       setError("Invalid email or password.");
@@ -27,337 +24,143 @@ export default function Login() {
     }
   };
 
-  const inputStyle = {
-    width: "100%",
-    background: "#232938",
-    border: "1px solid #3f4659",
-    borderRadius: "14px",
-    color: "#fff",
-    fontSize: "14px",
-    padding: "14px 16px",
-    outline: "none",
-    boxSizing: "border-box",
-    fontFamily: "inherit",
-    transition: "all .25s ease",
-  };
-
   return (
-    <>
-      <style>
-        {`
-
-    @keyframes float1 {
-      0%,100%{
-        transform:translateY(0);
-      }
-      50%{
-        transform:translateY(35px);
-      }
-    }
-
-    @keyframes float2 {
-
-      0%,100%{
-        transform:translateY(0);
-      }
-
-      50%{
-        transform:translateY(-40px);
-      }
-
-    }
-
-    @keyframes pulseGlow {
-      0%,100%{
-        transform:scale(1);
-        box-shadow:
-        0 0 20px rgba(99,102,241,.4);
-
-      }
-
-      50%{
-
-        transform:scale(1.08);
-
-        box-shadow:
-        0 0 40px rgba(99,102,241,.8);
-
-      }
-
-    }
-
-    @keyframes cardFloat {
-
-      0%,100%{
-
-        transform:translateY(0);
-      }
-      50%{
-
-        transform:translateY(-8px);
-
-      }
-    }
-
-    `}
-      </style>
-
-      <div
-        style={{
-          minHeight: "100vh",
-
-          background: `
-      radial-gradient(circle at top left,
-      rgba(99,102,241,.18),
-      transparent 35%),
-
-      radial-gradient(circle at bottom right,
-      rgba(168,85,247,.18),
-      transparent 35%),
-
-      #0f1117
-      `,
-
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "24px",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
+    <div className="min-h-screen w-full grid grid-cols-1 md:grid-cols-[1.05fr_1fr] bg-slate-50 font-sans text-slate-900">
+      <aside className="relative overflow-hidden text-white flex flex-col justify-between p-6 md:p-14 min-h-50 md:min-h-screen bg-[radial-gradient(900px_500px_at_15%_20%,rgba(129,140,248,0.35),transparent_60%),radial-gradient(700px_500px_at_90%_90%,rgba(168,85,247,0.30),transparent_60%),linear-gradient(160deg,#0b1020_0%,#131a35_55%,#1a1147_100%)]">
+        
         <div
+          className="pointer-events-none absolute inset-0 opacity-100"
           style={{
-            position: "absolute",
-            top: "-120px",
-            left: "-120px",
-            width: "350px",
-            height: "350px",
-            borderRadius: "50%",
-            background: "rgba(99,102,241,.25)",
-            filter: "blur(90px)",
-            animation: "float1 8s infinite",
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)",
+            backgroundSize: "44px 44px",
+            WebkitMaskImage:
+              "radial-gradient(ellipse at 30% 30%, #000 40%, transparent 75%)",
+            maskImage:
+              "radial-gradient(ellipse at 30% 30%, #000 40%, transparent 75%)",
           }}
         />
+        
+        <div className="pointer-events-none absolute -top-16 -left-16 w-80 h-80 rounded-full bg-indigo-500 opacity-55 blur-3xl animate-pulse" />
+        <div className="pointer-events-none absolute -bottom-14 -right-10 w-72 h-72 rounded-full bg-fuchsia-500 opacity-50 blur-3xl animate-pulse [animation-duration:6s]" />
 
-        <div
-          style={{
-            position: "absolute",
-            bottom: "-120px",
-            right: "-120px",
-            width: "350px",
-            height: "350px",
-            borderRadius: "50%",
-            background: "rgba(168,85,247,.25)",
-            filter: "blur(90px)",
-            animation: "float2 10s infinite",
-          }}
-        />
-
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "420px",
-            background: "rgba(26,31,46,.75)",
-            backdropFilter: "blur(20px)",
-            border: "1px solid rgba(255,255,255,.08)",
-            borderRadius: "26px",
-            overflow: "hidden",
-            boxShadow: "0 30px 100px rgba(0,0,0,.6)",
-            animation: "cardFloat 5s infinite",
-          }}
-        >
-
-          <div
-            style={{
-              padding: "35px",
-
-              textAlign: "center",
-
-              borderBottom: "1px solid #2d3348",
-
-              background:
-                "linear-gradient(135deg,rgba(99,102,241,.25),rgba(168,85,247,.15))",
-            }}
-          >
-            <div
-              style={{
-                width: "64px",
-                height: "64px",
-                borderRadius: "18px",
-                background: "rgba(99,102,241,.2)",
-                border: "1px solid rgba(99,102,241,.4)",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                margin: "0 auto 16px",
-                fontSize: "30px",
-                animation: "pulseGlow 2.5s infinite",
-              }}
-            >
-              ⚡
-            </div>
-
-            <h1
-              style={{
-                color: "#fff",
-                fontSize: "24px",
-                fontWeight: "800",
-                margin: 0,
-              }}
-            >
-              Centralized Workspace
-            </h1>
-
-            <p
-              style={{
-                color: "#94a3b8",
-                fontSize: "13px",
-                marginTop: "8px",
-              }}
-            >
-              Sign in to your account
-            </p>
+        
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl grid place-items-center text-lg bg-linear-to-br from-indigo-400 to-fuchsia-500 shadow-[0_10px_30px_rgba(129,140,248,.45)] ring-1 ring-white/20">
+            ⚡
           </div>
+          <div className="font-semibold tracking-wide">Nexus</div>
+        </div>
 
-          <form
-            onSubmit={handleLogin}
-            style={{
-              padding: "32px",
-              display: "flex",
-              flexDirection: "column",
-              gap: "20px",
-            }}
-          >
+       
+        <div className="relative z-10 max-w-lg hidden md:block">
+          <span className="inline-block text-[11px] tracking-[0.22em] uppercase text-indigo-200 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6">
+            Centralized Workspace
+          </span>
+          <h2 className="text-3xl lg:text-4xl font-semibold leading-tight tracking-tight mb-4">
+            One quiet place for{" "}
+            <em className="not-italic bg-linear-to-r from-indigo-200 to-fuchsia-300 bg-clip-text text-transparent">
+              everything
+            </em>{" "}
+            your team ships.
+          </h2>
+          <p className="text-slate-300 text-[15px] leading-relaxed">
+            Bring projects, docs, and decisions into a single focused surface —
+            built for calm, fast work.
+          </p>
+        </div>
 
+        
+        <div className="relative z-10 hidden md:flex justify-between items-center text-xs text-slate-400">
+          <span>© {new Date().getFullYear()} Nimbus</span>
+          <span>Secure by design</span>
+        </div>
+      </aside>
+
+      
+      <main className="grid place-items-center p-6 sm:p-8 md:p-12 bg-linear-to-br from-slate-50 to-white">
+        <div className="w-full max-w-105 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <div className="text-[11px] tracking-[0.22em] uppercase text-slate-500 mb-2.5">
+            Welcome back
+          </div>
+          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900 mb-2">
+            Sign in to your account
+          </h1>
+          <p className="text-sm text-slate-500 mb-8">
+            Enter your credentials to continue.
+          </p>
+
+          <form onSubmit={handleLogin} noValidate className="space-y-4">
+            
             <div>
               <label
-                style={{
-                  color: "#94a3b8",
-                  fontSize: "11px",
-                  fontWeight: "700",
-                  letterSpacing: "1px",
-                }}
+                htmlFor="email"
+                className="block text-xs font-medium text-slate-700 mb-2"
               >
-                EMAIL
+                Email address
               </label>
-
               <input
+                id="email"
                 type="email"
-                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                style={inputStyle}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#6366f1";
-
-                  e.target.style.boxShadow = "0 0 0 4px rgba(99,102,241,.15)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#3f4659";
-
-                  e.target.style.boxShadow = "none";
-                }}
+                autoComplete="off"
+                required
+                className="w-full bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 px-4 py-3 outline-hidden transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/15"
               />
             </div>
 
+            
             <div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "8px",
-                }}
-              >
+              <div className="flex items-center justify-between mb-2">
                 <label
-                  style={{
-                    color: "#94a3b8",
-                    fontSize: "11px",
-                    fontWeight: "700",
-                    letterSpacing: "1px",
-                  }}
+                  htmlFor="password"
+                  className="block text-xs font-medium text-slate-700"
                 >
-                  PASSWORD
+                  Password
                 </label>
-
                 <Link
                   to="/forgot-password"
-                  style={{
-                    color: "#818cf8",
-                    fontSize: "12px",
-                  }}
+                  className="text-xs font-medium text-indigo-600 hover:underline"
                 >
                   Forgot password?
                 </Link>
               </div>
-
               <input
+                id="password"
                 type="password"
-                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                style={inputStyle}
-                onFocus={(e) => {
-                  e.target.style.borderColor = "#6366f1";
-
-                  e.target.style.boxShadow = "0 0 0 4px rgba(99,102,241,.15)";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#3f4659";
-
-                  e.target.style.boxShadow = "none";
-                }}
+                autoComplete="off"
+                required
+                className="w-full bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 px-4 py-3 outline-hidden transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/15"
               />
             </div>
 
+           
             {error && (
-              <div
-                style={{
-                  background: "rgba(239,68,68,.1)",
-                  border: "1px solid rgba(239,68,68,.2)",
-                  color: "#fca5a5",
-                  padding: "12px",
-                  borderRadius: "12px",
-                  textAlign: "center",
-                }}
-              >
+              <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-3.5 py-2.5 text-sm">
                 {error}
               </div>
             )}
 
+            
             <button
-              disabled={loading}
               type="submit"
-              style={{
-                width: "100%",
-                padding: "15px",
-                borderRadius: "14px",
-                border: "none",
-                background: "#4f46e5",
-                color: "#fff",
-                fontWeight: "700",
-                cursor: loading ? "not-allowed" : "pointer",
-                transition: ".3s",
-                boxShadow: "0 15px 35px rgba(79,70,229,.4)",
-              }}
-              onMouseEnter={(e) => {
-                if (!loading) {
-                  e.currentTarget.style.transform = "translateY(-3px)";
-                  e.currentTarget.style.background = "#4338ca";
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.background = "#4f46e5";
-              }}
+              disabled={loading}
+              className="w-full rounded-xl px-4 py-3 text-sm font-semibold text-white bg-linear-to-br from-indigo-600 to-indigo-500 shadow-[0_10px_24px_rgba(79,70,229,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_30px_rgba(79,70,229,0.38)] hover:from-indigo-700 hover:to-indigo-600 active:translate-y-0 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
-              {loading ? "Signing in..." : "Sign in →"}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
+
+          <p className="mt-6 text-xs text-slate-500 text-center leading-relaxed">
+            Protected by industry-standard encryption.
+          </p>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }

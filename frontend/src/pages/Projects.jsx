@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import api from '../services/api'
-import CreateProjectForm from '../components/CreateProjectForm'
-import ProjectTable       from '../components/ProjectTable'
-import ProjectFilter      from '../components/ProjectFilter'
+import CreateProjectForm from '../components/projects/CreateProjectForm'
+import ProjectTable       from '../components/projects/ProjectTable'
+import ProjectFilter      from '../components/projects/ProjectFilter'
 import { useRole }        from '../hooks/useRole'
 
 function Projects() {
