@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { logout } from "../services/authService";
+import DashboardHome from "../components/dashboard/DashboardHome";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -42,8 +43,14 @@ export default function Dashboard() {
       />
 
       <div className="flex-1 overflow-y-auto">
+      <DashboardHome />
         <Outlet />
       </div>
     </div>
   );
 }
+
+
+// build the dashboard page and create it as mentioned in the pdf and it will show the no of teams, project, tasks and documents according to the user have 
+// and make sure build a perfect ui that looks cool professional unique and interactive (using tailwind css)
+// when i click the dashboard btn in the navbar it will open the dashboard page , when i click task it will open it like that instead of under the dashboard it will open in a page 
