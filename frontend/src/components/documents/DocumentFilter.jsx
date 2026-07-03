@@ -1,3 +1,5 @@
+import { Search, X } from "lucide-react";
+
 function DocumentFilter({
   projects,
   docTypes,
@@ -10,170 +12,86 @@ function DocumentFilter({
   onClear,
 }) {
 
-  const selectStyle = {
-    background: "#232938",
-    border: "1px solid #3f4659",
-    borderRadius: "12px",
-    color: "#fff",
-    fontSize: "14px",
-    padding: "11px 16px",
-    outline: "none",
-    cursor: "pointer",
-  }
+  const fieldBase = "rounded-2xl border px-4 py-3 text-sm outline-none transition-all duration-200"
+  const fieldNormal = "border-white/10 bg-white/[0.04] text-white placeholder:text-slate-500 focus:border-purple-500/60 focus:ring-4 focus:ring-purple-500/10 [color-scheme:dark]"
+  const optionClass = "bg-[#111524] text-white"
 
-  const labelStyle = {
-    color: "#94a3b8",
-    fontSize: "11px",
-    fontWeight: "600",
-    textTransform: "uppercase",
-    letterSpacing: "0.08em",
-  }
-
-  const anyActive = searchFilter || projectFilter || typeFilter
+  const anyActive = searchFilter || projectFilter || typeFilter;
 
   return (
-    <div style={{
-      display:"flex",
-      gap:"12px",
-      marginBottom:"24px",
-      flexWrap:"wrap",
-      alignItems:"flex-end"
-    }}>
+    <div className="flex gap-4 mb-8 flex-wrap items-end">
 
       <div>
-        <label style={labelStyle}>Search</label>
+        <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
+          Search
+        </label>
 
-        <div style={{
-          display:"flex",
-          alignItems:"center",
-          gap:"8px",
-          background:"#232938",
-          border:"1px solid #3f4659",
-          borderRadius:"12px",
-          padding:"11px 16px",
-          minWidth:"200px",
-          marginTop:"8px"
-        }}>
-
-          🔍
+        <div className={`flex items-center gap-2.5 min-w-[220px] ${fieldBase} ${fieldNormal} focus-within:border-purple-500/60 focus-within:ring-4 focus-within:ring-purple-500/10`}>
+          <Search size={15} className="text-slate-500 shrink-0" />
 
           <input
             value={searchFilter}
-            onChange={(e)=>onSearchChange(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search by title..."
-            style={{
-              background:"transparent",
-              border:"none",
-              outline:"none",
-              color:"#fff",
-              fontSize:"14px",
-              flex:1
-            }}
+            className="flex-1 bg-transparent outline-none text-sm text-white placeholder:text-slate-500"
           />
 
           {searchFilter && (
             <button
-              onClick={()=>onSearchChange("")}
-              style={{
-                background:"transparent",
-                border:"none",
-                color:"#6b7280",
-                cursor:"pointer"
-              }}
+              onClick={() => onSearchChange("")}
+              className="shrink-0 text-slate-500 transition-colors duration-200 hover:text-white"
             >
-              ✕
+              <X size={14} />
             </button>
           )}
-
         </div>
       </div>
 
-
       <div>
-        <label style={labelStyle}>Filter by Project</label>
+        <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
+          Filter by Project
+        </label>
 
         <select
           value={projectFilter}
-          onChange={(e)=>onProjectChange(e.target.value)}
-          style={{
-            ...selectStyle,
-            minWidth:"180px",
-            display:"block",
-            marginTop:"8px"
-          }}
+          onChange={(e) => onProjectChange(e.target.value)}
+          className={`${fieldBase} ${fieldNormal} min-w-[180px] block cursor-pointer`}
         >
-
-          <option value="">All Projects</option>
-
-          {projects.map(p=>(
-            <option key={p.id} value={p.id}>
+          <option value="" className={optionClass}>All Projects</option>
+          {projects.map((p) => (
+            <option key={p.id} value={p.id} className={optionClass}>
               {p.title}
             </option>
           ))}
-
         </select>
-
       </div>
 
-
       <div>
-
-        <label style={labelStyle}>
+        <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
           Filter by Type
         </label>
 
         <select
           value={typeFilter}
-          onChange={(e)=>onTypeChange(e.target.value)}
-          style={{
-            ...selectStyle,
-            minWidth:"180px",
-            display:"block",
-            marginTop:"8px"
-          }}
+          onChange={(e) => onTypeChange(e.target.value)}
+          className={`${fieldBase} ${fieldNormal} min-w-[180px] block cursor-pointer`}
         >
-
-          <option value="">All Types</option>
-
-          {docTypes.map(t=>(
-            <option key={t.id} value={t.id}>
+          <option value="" className={optionClass}>All Types</option>
+          {docTypes.map((t) => (
+            <option key={t.id} value={t.id} className={optionClass}>
               {t.name}
             </option>
           ))}
-
         </select>
-
       </div>
 
-
       {anyActive && (
-
         <button
           onClick={onClear}
-          style={{
-            background:"transparent",
-            border:"1px solid #3f4659",
-            color:"#94a3b8",
-            fontSize:"13px",
-            padding:"11px 16px",
-            borderRadius:"12px",
-            cursor:"pointer",
-            height:"42px"
-          }}
-
-          onMouseEnter={(e)=>{
-            e.currentTarget.style.borderColor="#f87171"
-            e.currentTarget.style.color="#f87171"
-          }}
-
-          onMouseLeave={(e)=>{
-            e.currentTarget.style.borderColor="#3f4659"
-            e.currentTarget.style.color="#94a3b8"
-          }}
+          className="inline-flex items-center gap-1.5 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-slate-400 transition-all duration-200 hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-300"
         >
-          ✕ Clear
+          <X size={14} /> Clear
         </button>
-
       )}
 
     </div>

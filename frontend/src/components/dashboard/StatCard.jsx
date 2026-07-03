@@ -1,79 +1,52 @@
 
-export default function StatCard({ icon, label, value, color, loading }) {
+const COLORS = {
+  indigo:  { from: 'from-indigo-500/10',  border: 'border-indigo-500/20', icon: 'bg-indigo-500/15 text-indigo-400',  ring: 'hover:border-indigo-500/50', glow: 'hover:shadow-indigo-500/10' },
+  emerald: { from: 'from-emerald-500/10', border: 'border-emerald-500/20', icon: 'bg-emerald-500/15 text-emerald-400', ring: 'hover:border-emerald-500/50', glow: 'hover:shadow-emerald-500/10' },
+  amber:   { from: 'from-amber-500/10',   border: 'border-amber-500/20', icon: 'bg-amber-500/15 text-amber-400',   ring: 'hover:border-amber-500/50', glow: 'hover:shadow-amber-500/10' },
+  rose:    { from: 'from-rose-500/10',    border: 'border-rose-500/20', icon: 'bg-rose-500/15 text-rose-400',    ring: 'hover:border-rose-500/50', glow: 'hover:shadow-rose-500/10' },
+}
 
-  const colors = {
-    indigo: {
-      bg:     'rgba(99,102,241,0.1)',
-      border: 'rgba(99,102,241,0.2)',
-      icon:   'rgba(99,102,241,0.2)',
-      text:   '#a5b4fc',
-      glow:   'rgba(99,102,241,0.15)',
-    },
-    emerald: {
-      bg:     'rgba(16,185,129,0.1)',
-      border: 'rgba(16,185,129,0.2)',
-      icon:   'rgba(16,185,129,0.2)',
-      text:   '#6ee7b7',
-      glow:   'rgba(16,185,129,0.15)',
-    },
-    amber: {
-      bg:     'rgba(245,158,11,0.1)',
-      border: 'rgba(245,158,11,0.2)',
-      icon:   'rgba(245,158,11,0.2)',
-      text:   '#fcd34d',
-      glow:   'rgba(245,158,11,0.15)',
-    },
-    rose: {
-      bg:     'rgba(244,63,94,0.1)',
-      border: 'rgba(244,63,94,0.2)',
-      icon:   'rgba(244,63,94,0.2)',
-      text:   '#fda4af',
-      glow:   'rgba(244,63,94,0.15)',
-    },
-  }[color] || colors?.indigo
+export default function StatCard({ icon, label, value, color, loading, onClick }) {
+  const c = COLORS[color] || COLORS.indigo
 
   return (
-    <div style={{
-      background: `linear-gradient(135deg, ${colors.bg} 0%, rgba(17,21,36,0.6) 100%)`,
-      border: `1px solid ${colors.border}`,
-      borderRadius: '16px',
-      padding: '24px',
-      display: 'flex', alignItems: 'center', gap: '18px',
-      boxShadow: `0 4px 24px ${colors.glow}`,
-      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-      cursor: 'default',
-    }}
-      onMouseEnter={e => {
-        e.currentTarget.style.transform = 'translateY(-2px)'
-        e.currentTarget.style.boxShadow = `0 8px 32px ${colors.glow}`
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = `0 4px 24px ${colors.glow}`
-      }}
+    <button
+      onClick={onClick}
+      className={`
+        w-full text-left
+        bg-gradient-to-br ${c.from} to-transparent
+        border ${c.border} ${c.ring}
+        rounded-2xl p-5
+        transition-all duration-200
+        hover:-translate-y-1 hover:shadow-xl ${c.glow}
+        group cursor-pointer
+      `}
     >
-      {/* Icon box */}
-      <div style={{
-        width: '52px', height: '52px', borderRadius: '14px',
-        background: colors.icon,
-        border: `1px solid ${colors.border}`,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: '24px', flexShrink: 0,
-      }}>{icon}</div>
+      <div className="flex items-center gap-4">
+        {/* Icon */}
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0 ${c.icon}`}>
+          {icon}
+        </div>
 
-      {/* Text */}
-      <div>
-        <p style={{ color: '#94a3b8', fontSize: '12px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.06em', margin: 0 }}>
-          {label}
-        </p>
-        {loading ? (
-          <div style={{ width: '48px', height: '28px', borderRadius: '6px', background: 'rgba(255,255,255,0.08)', marginTop: '6px', animation: 'pulse 1.5s ease infinite' }} />
-        ) : (
-          <p style={{ color: '#f1f5f9', fontSize: '28px', fontWeight: '800', margin: '4px 0 0', lineHeight: 1 }}>
-            {value ?? '—'}
+        {/* Text */}
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-1">
+            {label}
           </p>
-        )}
+          {loading ? (
+            <div className="h-7 w-12 rounded-md bg-white/5 animate-pulse" />
+          ) : (
+            <p className="text-3xl font-extrabold text-white leading-none tracking-tight">
+              {value ?? '—'}
+            </p>
+          )}
+        </div>
       </div>
-    </div>
+
+      {/* Footer */}
+      <p className="mt-3 text-xs text-slate-600 group-hover:text-slate-400 transition-colors">
+        Click to view {label.toLowerCase()} →
+      </p>
+    </button>
   )
 }

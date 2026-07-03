@@ -1,15 +1,25 @@
 import { useState, useEffect } from 'react'
+import {
+  FileText, FileSpreadsheet, Presentation, Image, Archive, File as FileIcon,
+  Eye, Download, Trash2, Loader2, Folder, User, Calendar,
+} from 'lucide-react'
 
-const getFileIcon = (filename) => {
-  if (!filename) return '📄'
+const getFileIconMeta = (filename) => {
+  if (!filename) return { Icon: FileIcon, classes: 'bg-purple-500/15 border-purple-500/20 text-purple-300' }
   const ext = filename.split('.').pop().toLowerCase()
-  if (['pdf'].includes(ext))                       return '📕'
-  if (['doc', 'docx'].includes(ext))               return '📝'
-  if (['xls', 'xlsx'].includes(ext))               return '📊'
-  if (['ppt', 'pptx'].includes(ext))               return '📊'
-  if (['jpg', 'jpeg', 'png', 'gif'].includes(ext)) return '🖼️'
-  if (['zip', 'rar'].includes(ext))                return '🗜️'
-  return '📄'
+  if (['pdf'].includes(ext))
+    return { Icon: FileText, classes: 'bg-rose-500/15 border-rose-500/20 text-rose-300' }
+  if (['doc', 'docx'].includes(ext))
+    return { Icon: FileText, classes: 'bg-indigo-500/15 border-indigo-500/20 text-indigo-300' }
+  if (['xls', 'xlsx'].includes(ext))
+    return { Icon: FileSpreadsheet, classes: 'bg-emerald-500/15 border-emerald-500/20 text-emerald-300' }
+  if (['ppt', 'pptx'].includes(ext))
+    return { Icon: Presentation, classes: 'bg-amber-500/15 border-amber-500/20 text-amber-300' }
+  if (['jpg', 'jpeg', 'png', 'gif'].includes(ext))
+    return { Icon: Image, classes: 'bg-purple-500/15 border-purple-500/20 text-purple-300' }
+  if (['zip', 'rar'].includes(ext))
+    return { Icon: Archive, classes: 'bg-slate-500/15 border-slate-500/20 text-slate-300' }
+  return { Icon: FileIcon, classes: 'bg-purple-500/15 border-purple-500/20 text-purple-300' }
 }
 
 export default function DocumentTable({ documents, onDelete, canDelete }) {
@@ -52,171 +62,156 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
   return (
     <>
       {!isMobile && (
-        <div style={{
-          background: '#1a1f2e', border: '1px solid #2d3348',
-          borderRadius: '16px', overflow: 'hidden',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
-        }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl shadow-[0_8px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden">
+          <table className="w-full border-collapse">
             <thead>
-              <tr style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 100%)' }}>
-                <th style={thStyle}>Document</th>
-                <th style={thStyle}>Project</th>
-                <th style={thStyle}>Type</th>
-                <th style={thStyle}>Uploaded By</th>
-                <th style={thStyle}>Date</th>
-                <th style={{ ...thStyle, textAlign: 'right' }}>Actions</th>
+              <tr className="bg-gradient-to-r from-purple-500/[0.08] via-indigo-500/[0.05] to-purple-500/[0.08]">
+                <th className="text-left px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Document</th>
+                <th className="text-left px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Project</th>
+                <th className="text-left px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Type</th>
+                <th className="text-left px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Uploaded By</th>
+                <th className="text-left px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Date</th>
+                <th className="text-right px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {documents.map((doc, i) => (
-                <tr key={doc.id}
-                  style={{ borderTop: i === 0 ? 'none' : '1px solid #2d3348', transition: 'background 0.15s' }}
-                  onMouseEnter={e => e.currentTarget.style.background = 'rgba(99,102,241,0.04)'}
-                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                >
-                  <td style={tdStyle}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(99,102,241,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', flexShrink: 0 }}>
-                        {getFileIcon(doc.file)}
+              {documents.map((doc, i) => {
+                const { Icon, classes } = getFileIconMeta(doc.file)
+                return (
+                  <tr key={doc.id}
+                    className={`${i === 0 ? '' : 'border-t border-white/[0.06]'} transition-colors duration-150 hover:bg-purple-500/[0.04]`}
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border ${classes}`}>
+                          <Icon size={16} />
+                        </div>
+                        <span className="text-sm font-semibold text-white">{doc.title}</span>
                       </div>
-                      <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px' }}>{doc.title}</span>
-                    </div>
-                  </td>
-                  <td style={tdStyle}>
-                    <span style={{ color: '#9ca3af', fontSize: '13px' }}>{doc.project_detail?.title || '—'}</span>
-                  </td>
-                  <td style={tdStyle}>
-                    {doc.document_type_detail ? (
-                      <span style={{ background: 'rgba(99,102,241,0.15)', color: '#a5b4fc', fontSize: '11px', fontWeight: '700', padding: '3px 10px', borderRadius: '999px' }}>
-                        {doc.document_type_detail.name}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-[13px] text-slate-400">{doc.project_detail?.title || '—'}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      {doc.document_type_detail ? (
+                        <span className="inline-block whitespace-nowrap rounded-full bg-purple-500/15 px-2.5 py-1 text-[11px] font-bold text-purple-300">
+                          {doc.document_type_detail.name}
+                        </span>
+                      ) : (
+                        <span className="text-[13px] text-slate-600">—</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-[13px] text-slate-400">{doc.uploaded_by_detail?.name || '—'}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-xs text-slate-400">
+                        {doc.uploaded_at ? new Date(doc.uploaded_at).toLocaleDateString() : '—'}
                       </span>
-                    ) : (
-                      <span style={{ color: '#4b5563', fontSize: '13px' }}>—</span>
-                    )}
-                  </td>
-                  <td style={tdStyle}>
-                    <span style={{ color: '#9ca3af', fontSize: '13px' }}>{doc.uploaded_by_detail?.name || '—'}</span>
-                  </td>
-                  <td style={tdStyle}>
-                    <span style={{ color: '#9ca3af', fontSize: '12px' }}>
-                      {doc.uploaded_at ? new Date(doc.uploaded_at).toLocaleDateString() : '—'}
-                    </span>
-                  </td>
-                  <td style={{ ...tdStyle, textAlign: 'right' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex justify-end gap-2">
 
-                      {doc.file_url && (
-                        <a href={doc.file_url} target="_blank" rel="noreferrer" style={viewBtnStyle}
-                          onMouseEnter={e => e.currentTarget.style.background = '#374151'}
-                          onMouseLeave={e => e.currentTarget.style.background = '#2d3348'}
-                        >👁 View</a>
-                      )}
+                        {doc.file_url && (
+                          <a
+                            href={doc.file_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3.5 py-2 text-xs font-semibold text-indigo-300 transition-all duration-200 hover:bg-white/[0.08] hover:text-white"
+                          ><Eye size={13} /> View</a>
+                        )}
 
-                      {doc.file_url && (
-                        <button
-                          onClick={() => handleDownload(doc)}
-                          disabled={downloadingId === doc.id}
-                          style={{
-                            ...downloadBtnStyle,
-                            cursor: downloadingId === doc.id ? 'not-allowed' : 'pointer',
-                            opacity: downloadingId === doc.id ? 0.6 : 1,
-                          }}
-                          onMouseEnter={e => { if (downloadingId !== doc.id) e.currentTarget.style.background = '#4338ca' }}
-                          onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
-                        >{downloadingId === doc.id ? '⏳ Downloading...' : '⬇ Download'}</button>
-                      )}
+                        {doc.file_url && (
+                          <button
+                            onClick={() => handleDownload(doc)}
+                            disabled={downloadingId === doc.id}
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-b from-purple-500 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-[0_4px_14px_-2px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                          >
+                            {downloadingId === doc.id
+                              ? <><Loader2 size={13} className="animate-spin" /> Downloading...</>
+                              : <><Download size={13} /> Download</>
+                            }
+                          </button>
+                        )}
 
-                      {canDelete && (
-                        <button onClick={() => onDelete(doc.id)} style={deleteBtnStyle}
-                          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.15)'; e.currentTarget.style.color = '#fca5a5' }}
-                          onMouseLeave={e => { e.currentTarget.style.background = '#2d3348'; e.currentTarget.style.color = '#f87171' }}
-                        >Delete</button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                        {canDelete && (
+                          <button
+                            onClick={() => onDelete(doc.id)}
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-red-400 transition-all duration-200 hover:bg-red-500/15 hover:border-red-400/30 hover:text-red-300"
+                          ><Trash2 size={14} /></button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
       )}
 
       {isMobile && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {documents.map((doc) => (
-            <div key={doc.id} style={{
-              background: '#1a1f2e', border: '1px solid #2d3348',
-              borderRadius: '14px', padding: '16px',
-              display: 'flex', flexDirection: 'column', gap: '10px',
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(99,102,241,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', flexShrink: 0 }}>
-                  {getFileIcon(doc.file)}
+        <div className="flex flex-col gap-3">
+          {documents.map((doc) => {
+            const { Icon, classes } = getFileIconMeta(doc.file)
+            return (
+              <div key={doc.id} className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4">
+                <div className="flex items-center gap-2.5">
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${classes}`}>
+                    <Icon size={15} />
+                  </div>
+                  <span className="flex-1 truncate text-sm font-semibold text-white">{doc.title}</span>
                 </div>
-                <span style={{ color: '#fff', fontWeight: '600', fontSize: '14px', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {doc.title}
-                </span>
-              </div>
 
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {doc.document_type_detail && (
-                  <span style={{ background: 'rgba(99,102,241,0.15)', color: '#a5b4fc', fontSize: '11px', fontWeight: '700', padding: '3px 10px', borderRadius: '999px' }}>
-                    {doc.document_type_detail.name}
+                  <div>
+                    <span className="inline-block whitespace-nowrap rounded-full bg-purple-500/15 px-2.5 py-1 text-[11px] font-bold text-purple-300">
+                      {doc.document_type_detail.name}
+                    </span>
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-1 text-xs text-slate-400">
+                  <span className="inline-flex items-center gap-1.5"><Folder size={12} /> {doc.project_detail?.title || '—'}</span>
+                  <span className="inline-flex items-center gap-1.5"><User size={12} /> {doc.uploaded_by_detail?.name || '—'}</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <Calendar size={12} /> {doc.uploaded_at ? new Date(doc.uploaded_at).toLocaleDateString() : '—'}
                   </span>
-                )}
-              </div>
+                </div>
 
-              <div style={{ fontSize: '12px', color: '#9ca3af', display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                <span>📁 {doc.project_detail?.title || '—'}</span>
-                <span>👤 {doc.uploaded_by_detail?.name || '—'}</span>
-                <span>📅 {doc.uploaded_at ? new Date(doc.uploaded_at).toLocaleDateString() : '—'}</span>
+                <div className="flex gap-2 flex-wrap mt-1">
+                  {doc.file_url && (
+                    <a
+                      href={doc.file_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] py-2 text-xs font-semibold text-indigo-300"
+                    ><Eye size={13} /> View</a>
+                  )}
+                  {doc.file_url && (
+                    <button
+                      onClick={() => handleDownload(doc)}
+                      disabled={downloadingId === doc.id}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-b from-purple-500 to-indigo-600 py-2 text-xs font-semibold text-white disabled:opacity-60"
+                    >
+                      {downloadingId === doc.id
+                        ? <Loader2 size={13} className="animate-spin" />
+                        : <><Download size={13} /> Download</>
+                      }
+                    </button>
+                  )}
+                  {canDelete && (
+                    <button
+                      onClick={() => onDelete(doc.id)}
+                      className="flex-1 rounded-lg border border-white/10 bg-white/[0.04] py-2 text-xs font-semibold text-red-400"
+                    >Delete</button>
+                  )}
+                </div>
               </div>
-
-              <div style={{ display: 'flex', gap: '8px', marginTop: '4px', flexWrap: 'wrap' }}>
-                {doc.file_url && (
-                  <a href={doc.file_url} target="_blank" rel="noreferrer" style={{ ...viewBtnStyle, flex: 1, textAlign: 'center' }}>
-                    👁 View
-                  </a>
-                )}
-                {doc.file_url && (
-                  <button
-                    onClick={() => handleDownload(doc)}
-                    disabled={downloadingId === doc.id}
-                    style={{ ...downloadBtnStyle, flex: 1, textAlign: 'center', opacity: downloadingId === doc.id ? 0.6 : 1 }}
-                  >{downloadingId === doc.id ? '⏳...' : '⬇ Download'}</button>
-                )}
-                {canDelete && (
-                  <button onClick={() => onDelete(doc.id)} style={{ ...deleteBtnStyle, flex: 1 }}>Delete</button>
-                )}
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </>
   )
-}
-
-const thStyle = { textAlign: 'left', padding: '16px 20px', color: '#94a3b8', fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.08em' }
-const tdStyle = { padding: '16px 20px', fontSize: '14px' }
-
-const viewBtnStyle = {
-  background: '#2d3348', border: 'none', color: '#a5b4fc',
-  fontSize: '12px', fontWeight: '600', padding: '7px 16px', borderRadius: '8px',
-  cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center',
-  justifyContent: 'center', gap: '4px', transition: 'all 0.15s',
-}
-
-const downloadBtnStyle = {
-  background: '#4f46e5', border: 'none', color: '#fff',
-  fontSize: '12px', fontWeight: '600', padding: '7px 16px', borderRadius: '8px',
-  cursor: 'pointer', textDecoration: 'none', display: 'inline-flex', alignItems: 'center',
-  justifyContent: 'center', gap: '4px', transition: 'all 0.15s',
-}
-
-const deleteBtnStyle = {
-  background: '#2d3348', border: 'none', color: '#f87171',
-  fontSize: '12px', fontWeight: '600', padding: '7px 16px', borderRadius: '8px',
-  cursor: 'pointer', transition: 'all 0.15s',
 }

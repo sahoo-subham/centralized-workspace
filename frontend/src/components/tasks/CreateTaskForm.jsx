@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
+import { CheckSquare, X, Info } from "lucide-react";
 
-export default function CreateTaskForm({ onCreated, onCancel }) {
+function CreateTaskForm({ onCreated, onCancel }) {
 
   const [projects, setProjects]         = useState([])
   const [teamMembers, setTeamMembers]   = useState([]) 
@@ -121,83 +122,79 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
     }
   }
 
-  const inputStyle = {
-    width: '100%', background: '#232938', border: '1px solid #3f4659',
-    borderRadius: '14px', color: '#fff', fontSize: '14px',
-    padding: '14px 16px', outline: 'none', boxSizing: 'border-box', fontFamily: 'inherit',
-  }
-
-  const labelStyle = {
-    color: '#94a3b8', fontSize: '11px', fontWeight: '600',
-    textTransform: 'uppercase', letterSpacing: '0.08em',
-    display: 'block', marginBottom: '10px',
-  }
+  const fieldBase = "w-full rounded-2xl border px-4 py-3.5 text-sm outline-none transition-all duration-200"
+  const fieldNormal = "border-white/10 bg-white/[0.04] text-white placeholder:text-slate-500 focus:border-purple-500/60 focus:ring-4 focus:ring-purple-500/10 [color-scheme:dark]"
+  const optionClass = "bg-[#111524] text-white"
 
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 50,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'rgba(0,0,0,0.70)', backdropFilter: 'blur(8px)', padding: '24px',
-    }}>
-      <div style={{
-        width: '100%', maxWidth: '580px',
-        borderRadius: '24px', border: '1px solid #2d3348',
-        background: '#1a1f2e', boxShadow: '0 30px 80px rgba(0,0,0,0.6)',
-        overflow: 'hidden', maxHeight: '90vh', overflowY: 'auto',
-      }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-6 animate-in fade-in duration-200">
+      <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl border border-white/10 bg-[#111524] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-2 duration-250">
 
-        <div style={{
-          background: 'linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 50%, rgba(99,102,241,0.25) 100%)',
-          borderBottom: '1px solid #2d3348', padding: '28px 32px',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ width: '52px', height: '52px', borderRadius: '16px', background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>✅</div>
+        <div className="flex items-center justify-between gap-4 p-7 border-b border-white/10 bg-gradient-to-br from-purple-500/25 via-indigo-500/15 to-purple-500/25">
+          <div className="flex items-center gap-4">
+            <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl bg-purple-500/20 border border-purple-400/30 text-purple-300">
+              <CheckSquare size={24} strokeWidth={1.75} />
+            </div>
             <div>
-              <p style={{ color: '#fff', fontWeight: '700', fontSize: '20px', margin: 0 }}>Create New Task</p>
-              <p style={{ color: '#94a3b8', fontSize: '13px', marginTop: '4px' }}>Assign a task to a project member.</p>
+              <p className="text-xl font-bold text-white m-0">Create New Task</p>
+              <p className="mt-1 text-[13px] text-slate-400">Assign a task to a project member.</p>
             </div>
           </div>
-          <button onClick={onCancel}
-            style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: 'none', color: '#94a3b8', fontSize: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = '#fff' }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#94a3b8' }}
-          >✕</button>
+          <button
+            onClick={onCancel}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/5 text-slate-400 transition-colors duration-200 hover:bg-white/10 hover:text-white"
+          ><X size={16} /></button>
         </div>
 
-        <div style={{ padding: '28px 32px' }}>
+        <div className="p-7">
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={labelStyle}>Task Title</label>
-            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Design login page" style={inputStyle}
-              onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
+          <div className="mb-5">
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-2.5">
+              Task Title
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Design login page"
+              className={`${fieldBase} ${fieldNormal}`}
+            />
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={labelStyle}>Description</label>
-            <textarea value={description} onChange={(e) => setDescription(e.target.value)}
-              rows={3} placeholder="What needs to be done?"
-              style={{ ...inputStyle, resize: 'none', lineHeight: '1.6' }}
-              onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
+          <div className="mb-5">
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-2.5">
+              Description
+            </label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              placeholder="What needs to be done?"
+              className={`${fieldBase} ${fieldNormal} resize-none leading-relaxed`}
+            />
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={labelStyle}>Project</label>
-            <select value={project} onChange={(e) => setProject(e.target.value)} style={inputStyle}
-              onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'}>
-              <option value="">Choose a project</option>
+          <div className="mb-5">
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-2.5">
+              Project
+            </label>
+            <select
+              value={project}
+              onChange={(e) => setProject(e.target.value)}
+              className={`${fieldBase} ${fieldNormal}`}
+            >
+              <option value="" className={optionClass}>Choose a project</option>
               {projects.map((p) => (
-                <option key={p.id} value={p.id}>{p.title}</option>
+                <option key={p.id} value={p.id} className={optionClass}>{p.title}</option>
               ))}
             </select>
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={labelStyle}>
+          <div className="mb-5">
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-2.5">
               Assigned To
               {project && !loadingMembers && (
-                <span style={{ color: '#6b7280', fontWeight: '400', marginLeft: '8px', textTransform: 'none', letterSpacing: 0, fontSize: '11px' }}>
+                <span className="ml-2 text-[11px] font-normal normal-case tracking-normal text-slate-500">
                   ({teamMembers.length} member{teamMembers.length !== 1 ? 's' : ''} in this project's team)
                 </span>
               )}
@@ -206,14 +203,9 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
               value={assignedTo}
               onChange={(e) => setAssignedTo(e.target.value)}
               disabled={!project || loadingMembers}
-              style={{
-                ...inputStyle,
-                opacity: (!project || loadingMembers) ? 0.5 : 1,
-                cursor: (!project || loadingMembers) ? 'not-allowed' : 'pointer',
-              }}
-              onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'}
+              className={`${fieldBase} ${fieldNormal} ${(!project || loadingMembers) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             >
-              <option value="">
+              <option value="" className={optionClass}>
                 {!project
                   ? 'Select a project first'
                   : loadingMembers
@@ -221,45 +213,47 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
                     : 'Unassigned'}
               </option>
               {teamMembers.map((m) => (
-                <option key={m.id} value={m.user}>
+                <option key={m.id} value={m.user} className={optionClass}>
                   {m.user_detail?.name} — {m.user_detail?.email}
                 </option>
               ))}
             </select>
           </div>
 
-          <div style={{ marginBottom: '20px' }}>
-            <label style={labelStyle}>Due Date</label>
-            <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} style={inputStyle}
-              onFocus={e => e.target.style.borderColor = '#6366f1'} onBlur={e => e.target.style.borderColor = '#3f4659'} />
+          <div className="mb-5">
+            <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-2.5">
+              Due Date
+            </label>
+            <input
+              type="date"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
+              className={`${fieldBase} ${fieldNormal}`}
+            />
           </div>
 
-          <div style={{
-            background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)',
-            borderRadius: '12px', padding: '12px 16px', marginBottom: '20px',
-            display: 'flex', alignItems: 'center', gap: '10px',
-          }}>
-            <span style={{ fontSize: '16px' }}>ℹ️</span>
-            <p style={{ color: '#a5b4fc', fontSize: '12px', margin: 0 }}>
+          <div className="mb-5 flex items-center gap-2.5 rounded-xl border border-purple-500/20 bg-purple-500/[0.08] px-4 py-3">
+            <Info size={16} className="text-indigo-300 shrink-0" />
+            <p className="text-xs text-indigo-300 m-0">
               Status is set to <strong>Pending</strong> and priority to <strong>Low</strong> by default.
               You can change them after creation via the <strong>Edit</strong> button.
             </p>
           </div>
 
           {error && (
-            <div style={{ marginBottom: '16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '12px', padding: '12px 16px', color: '#fca5a5', fontSize: '13px' }}>
+            <div className="mb-4 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-[13px] text-red-300">
               {error}
             </div>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', paddingTop: '16px', borderTop: '1px solid #2d3348' }}>
-            <button onClick={onCancel}
-              style={{ background: '#2d3348', border: '1px solid #3f4659', color: '#cbd5e1', fontSize: '14px', fontWeight: '500', padding: '11px 20px', borderRadius: '12px', cursor: 'pointer' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#374151'} onMouseLeave={e => e.currentTarget.style.background = '#2d3348'}
+          <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
+            <button
+              onClick={onCancel}
+              className="rounded-xl border border-white/10 bg-white/[0.04] px-5 py-2.5 text-sm font-medium text-slate-300 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white"
             >Cancel</button>
-            <button onClick={handleSubmit}
-              style={{ background: '#4f46e5', border: 'none', color: '#fff', fontSize: '14px', fontWeight: '600', padding: '11px 24px', borderRadius: '12px', cursor: 'pointer' }}
-              onMouseEnter={e => e.currentTarget.style.background = '#4338ca'} onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
+            <button
+              onClick={handleSubmit}
+              className="rounded-xl bg-gradient-to-b from-purple-500 to-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(168,85,247,0.3),0_8px_20px_-4px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
             >Create Task →</button>
           </div>
 
@@ -268,3 +262,5 @@ export default function CreateTaskForm({ onCreated, onCancel }) {
     </div>
   )
 }
+
+export default CreateTaskForm;
