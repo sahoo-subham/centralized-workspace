@@ -163,4 +163,23 @@ CORS_ALLOWED_ORIGINS = [
 MEDIA_URL  = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' 
+# ── LOCAL DEVELOPMENT ────────────────────────────────────
+# Prints the email content (including reset link) directly
+# in the Django terminal instead of actually sending it.
+# Perfect for testing with fake emails like abc@gmail.com
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@workspace.com'
+
+
+# ── PRODUCTION (when you're ready for real emails) ───────
+# Comment out the console backend above and use this instead.
+# Works with Gmail SMTP — requires an "App Password", not your
+# normal Gmail password (Google blocks normal passwords for SMTP).
+#
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_PORT          = 587
+EMAIL_USE_TLS       = True
+EMAIL_HOST_USER     = 'sahoosubham2603@gmail.com'
+EMAIL_HOST_PASSWORD = 'subham2603'   # generate at myaccount.google.com/apppasswords
+DEFAULT_FROM_EMAIL  = EMAIL_HOST_USER

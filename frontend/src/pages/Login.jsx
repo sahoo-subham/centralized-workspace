@@ -72,7 +72,7 @@ export default function Login() {
 
         
         <div className="relative z-10 hidden md:flex justify-between items-center text-xs text-slate-400">
-          <span>© {new Date().getFullYear()} Nimbus</span>
+          <span>© {new Date().getFullYear()} Nexus</span>
           <span>Secure by design</span>
         </div>
       </aside>

@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password, check_password
 from .models import User
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -65,7 +65,6 @@ class LogoutView(APIView):
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
         
 
-
 class ForgotPasswordView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -80,13 +79,14 @@ class ForgotPasswordView(APIView):
 
         reset_link = f"http://localhost:5173/reset-password/{uid}/{token}/"
 
-        send_mail(
+        email_msg = EmailMessage(
             subject='Password Reset Request',
-            message=f'Click the link to reset your password:\n\n{reset_link}',
+            body=f'Click the link to reset your password:\n\n{reset_link}',
             from_email='noreply@workspace.com',
-            recipient_list=[email],
-            fail_silently=False,
+            to=[email],
         )
+        email_msg.content_subtype = 'plain'
+        email_msg.send(fail_silently=False)
 
         return Response({'message': 'If this email exists, a reset link has been sent.'})
 

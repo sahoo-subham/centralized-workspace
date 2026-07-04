@@ -110,6 +110,7 @@ export default function Navbar({ activePage, onNavigate, onLogout }) {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
 
+          {/* Logo */}
           <button
             onClick={() => handleNavigate('Dashboard')}
             style={{
@@ -143,8 +144,8 @@ export default function Navbar({ activePage, onNavigate, onLogout }) {
                   onClick={() => handleNavigate(item.name)}
                   className="nav-link-hover"
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '8px',
-                    padding: '9px 16px', borderRadius: '9px', border: 'none',
+                    display: 'flex', alignItems: 'center', gap: '6px',
+                    padding: '7px 13px', borderRadius: '9px', border: 'none',
                     background: active ? 'rgba(99,102,241,0.18)' : 'transparent',
                     color: active ? '#e0e7ff' : '#94a3b8',
                     fontSize: '13px', fontWeight: active ? '600' : '500',
@@ -255,6 +256,7 @@ export default function Navbar({ activePage, onNavigate, onLogout }) {
                 padding: '8px', zIndex: 60,
                 animation: 'slideDown 0.18s ease',
               }}>
+                {/* Header */}
                 <div style={{
                   padding: '12px 12px 10px',
                   borderBottom: '1px solid rgba(255,255,255,0.06)',
@@ -282,14 +284,18 @@ export default function Navbar({ activePage, onNavigate, onLogout }) {
                   </div>
                 </div>
 
-                <button className="profile-item" style={{
-                  width: '100%', textAlign: 'left', padding: '9px 12px',
-                  borderRadius: '10px', border: 'none',
-                  background: 'transparent', color: '#cbd5e1',
-                  fontSize: '13px', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: '10px',
-                  transition: 'all 0.15s ease',
-                }}>
+                <button
+                  onClick={() => handleNavigate('Profile')}
+                  className="profile-item"
+                  style={{
+                    width: '100%', textAlign: 'left', padding: '9px 12px',
+                    borderRadius: '10px', border: 'none',
+                    background: 'transparent', color: '#cbd5e1',
+                    fontSize: '13px', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
                   <span>👤</span> Your Profile
                 </button>
 
@@ -321,6 +327,7 @@ export default function Navbar({ activePage, onNavigate, onLogout }) {
           top: '64px',
           animation: 'fadeIn 0.18s ease',
         }}>
+          {/* Backdrop */}
           <div
             onClick={() => setMobileOpen(false)}
             style={{
@@ -431,192 +438,3 @@ export default function Navbar({ activePage, onNavigate, onLogout }) {
     </>
   )
 }
-
-
-
-
-
-
-// import { Menu, MenuButton, MenuItem, MenuItems, Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
-// import {
-//   BellIcon,
-//   HomeIcon,
-//   UsersIcon,
-//   FolderIcon,
-//   CheckCircleIcon,
-//   DocumentTextIcon,
-//   MagnifyingGlassIcon,
-//   Bars3Icon,
-//   XMarkIcon,
-//   ChevronDownIcon,
-//   UserCircleIcon,
-//   Cog6ToothIcon,
-//   ArrowRightOnRectangleIcon,
-// } from "@heroicons/react/24/outline";
-
-// const navigation = [
-//   { name: "Dashboard", Icon: HomeIcon },
-//   { name: "Teams", Icon: UsersIcon },
-//   { name: "Projects", Icon: FolderIcon },
-//   { name: "Tasks", Icon: CheckCircleIcon },
-//   { name: "Documents", Icon: DocumentTextIcon },
-// ];
-
-// function cx(...classes) {
-//   return classes.filter(Boolean).join(" ");
-// }
-
-// export default function Navbar({ activePage, onNavigate, onLogout }) {
-//   return (
-//     <Disclosure
-//       as="header"
-//       className="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/75 backdrop-blur-xl"
-//     >
-//       {({ open, close }) => (
-//         <>
-//           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-//             <div className="flex h-16 items-center justify-between gap-4">
-//               <div className="flex items-center gap-3">
-//                 <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 text-white shadow-lg shadow-indigo-500/30">
-//                   <span className="text-sm font-bold tracking-tight">W</span>
-//                   <span className="absolute inset-0 rounded-xl ring-1 ring-inset ring-white/20" />
-//                 </div>
-//                 <div className="leading-tight">
-//                   <p className="text-sm font-semibold text-slate-900">Workspace</p>
-//                   <p className="text-[11px] font-medium text-slate-500">Acme Inc.</p>
-//                 </div>
-//               </div>
-
-//               <nav className="hidden items-center gap-1 lg:flex">
-//                 {navigation.map(({ name, Icon }) => {
-//                   const active = activePage === name;
-//                   return (
-//                     <button
-//                       key={name}
-//                       type="button"
-//                       onClick={() => onNavigate(name)}
-//                       aria-current={active ? "page" : undefined}
-//                       className={cx(
-//                         "group relative inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all",
-//                         active
-//                           ? "text-indigo-600"
-//                           : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
-//                       )}
-//                     >
-//                       <Icon className={cx("h-4 w-4 transition-colors", active ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600")} />
-//                       {name}
-//                       {active && (
-//                         <span className="absolute inset-x-3 -bottom-[17px] h-0.5 rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500" />
-//                       )}
-//                     </button>
-//                   );
-//                 })}
-//               </nav>
-
-//               <div className="flex items-center gap-2">
-
-//                 <button
-//                   type="button"
-//                   aria-label="View notifications"
-//                   className="relative inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-//                 >
-//                   <BellIcon className="h-5 w-5" />
-//                   <span className="absolute right-2 top-2 flex h-2 w-2">
-//                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
-//                     <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500 ring-2 ring-white" />
-//                   </span>
-//                 </button>
-
-//                 <Menu as="div" className="relative">
-//                   <MenuButton className="group flex items-center gap-2 rounded-lg p-1 pr-2 transition hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
-//                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br from-slate-700 to-slate-900 text-xs font-semibold text-white shadow-sm ring-2 ring-white">
-//                       YP
-//                     </span>
-//                     <ChevronDownIcon className="hidden h-4 w-4 text-slate-400 transition group-data-open:rotate-180 sm:block" />
-//                   </MenuButton>
-//                   <MenuItems
-//                     transition
-//                     anchor="bottom end"
-//                     className="z-50 mt-2 w-60 origin-top-right rounded-xl border border-slate-200 bg-white p-1.5 text-slate-700 shadow-xl shadow-slate-900/10 transition duration-100 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 focus:outline-none"
-//                   >
-//                     <div className="flex items-center gap-3 rounded-lg px-3 py-2.5">
-//                       <span className="flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-br from-slate-700 to-slate-900 text-xs font-semibold text-white">
-//                         YP
-//                       </span>
-//                       <div className="min-w-0 leading-tight">
-//                         <p className="truncate text-sm font-semibold text-slate-900">Your Profile</p>
-//                         <p className="truncate text-xs text-slate-500">you@workspace.com</p>
-//                       </div>
-//                     </div>
-//                     <div className="my-1 h-px bg-slate-100" />
-//                     <MenuItem>
-//                       {({ focus }) => (
-//                         <button
-//                           type="button"
-//                           className={cx(
-//                             "flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm",
-//                             focus ? "bg-slate-100 text-slate-900" : "text-slate-700",
-//                           )}
-//                         >
-//                           <UserCircleIcon className="h-4 w-4 text-slate-400" />
-//                           Account
-//                         </button>
-//                       )}
-//                     </MenuItem>
-//                     <div className="my-1 h-px bg-slate-100" />
-//                     <MenuItem>
-//                       {({ focus }) => (
-//                         <button
-//                           type="button"
-//                           onClick={onLogout}
-//                           className={cx(
-//                             "flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm",
-//                             focus ? "bg-red-50 text-red-700" : "text-red-600",
-//                           )}
-//                         >
-//                           <ArrowRightOnRectangleIcon className="h-4 w-4" />
-//                           Sign out
-//                         </button>
-//                       )}
-//                     </MenuItem>
-//                   </MenuItems>
-//                 </Menu>
-
-//                 <DisclosureButton className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 lg:hidden">
-//                   {open ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
-//                 </DisclosureButton>
-//               </div>
-//             </div>
-//           </div>
-
-//           <DisclosurePanel className="border-t border-slate-200/70 bg-white lg:hidden">
-//             <nav className="space-y-1 px-3 py-3">
-//               {navigation.map(({ name, Icon }) => {
-//                 const active = activePage === name;
-//                 return (
-//                   <button
-//                     key={name}
-//                     type="button"
-//                     onClick={() => {
-//                       onNavigate(name);
-//                       close();
-//                     }}
-//                     className={cx(
-//                       "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition",
-//                       active
-//                         ? "bg-indigo-50 text-indigo-700"
-//                         : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
-//                     )}
-//                   >
-//                     <Icon className={cx("h-5 w-5", active ? "text-indigo-600" : "text-slate-400")} />
-//                     {name}
-//                   </button>
-//                 );
-//               })}
-//             </nav>
-//           </DisclosurePanel>
-//         </>
-//       )}
-//     </Disclosure>
-//   );
-// }

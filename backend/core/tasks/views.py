@@ -2,11 +2,62 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
+from django.core.mail import send_mail
+from django.conf import settings
 from .models import Task
 from .serializers import TaskSerializer
 from teams.permissions import IsAdminOrTeamLeadOrReadOnly, IsAdminOrReadOnly
 from django.db.models import Q
 
+
+def notify_task_assigned(task):
+    """Send an email to the assigned user when a task is created or reassigned."""
+    if not task.assigned_to or not task.assigned_to.email:
+        return  
+
+    subject = f'New Task Assigned: {task.title}'
+    message = (
+        f'Hi {task.assigned_to.name},\n\n'
+        f'You have been assigned a new task:\n\n'
+        f'Title: {task.title}\n'
+        f'Project: {task.project.title}\n'
+        f'Priority: {task.priority}\n'
+        f'Due Date: {task.due_date or "Not set"}\n\n'
+        f'Log in to the workspace to view details.'
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[task.assigned_to.email],
+        fail_silently=True,  
+    )
+
+
+def notify_status_changed(task, old_status):
+    """Send an email to the task creator when the assignee updates the status."""
+    if not task.created_by or not task.created_by.email:
+        return
+    if old_status == task.status:
+        return  
+
+    subject = f'Task Status Updated: {task.title}'
+    message = (
+        f'Hi {task.created_by.name},\n\n'
+        f'The status of a task you created has changed:\n\n'
+        f'Title: {task.title}\n'
+        f'Old Status: {old_status}\n'
+        f'New Status: {task.status}\n'
+        f'Updated by: {task.assigned_to.name if task.assigned_to else "Unknown"}\n\n'
+        f'Log in to the workspace to view details.'
+    )
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[task.created_by.email],
+        fail_silently=True,
+    )
 
 class TaskListCreateView(generics.ListCreateAPIView):
     serializer_class   = TaskSerializer
@@ -30,7 +81,9 @@ class TaskListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         if self.request.user.role == 'member':
             raise PermissionDenied('Members cannot create tasks.')
-        serializer.save(created_by=self.request.user)
+        task = serializer.save(created_by=self.request.user)
+
+        notify_task_assigned(task)
 
 
 class TaskRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
@@ -47,16 +100,29 @@ class TaskRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         task = self.get_object()
         user = request.user
+        old_status     = task.status
+        old_assignee   = task.assigned_to
 
         if user.role == 'member':
             if task.assigned_to != user:
                 raise PermissionDenied('You can only update tasks assigned to you.')
             serializer = self.get_serializer(task, data={'status': request.data.get('status', task.status)}, partial=True)
             serializer.is_valid(raise_exception=True)
-            serializer.save()
+            updated_task = serializer.save()
+
+            notify_status_changed(updated_task, old_status)
             return Response(serializer.data)
 
-        return super().update(request, *args, **kwargs)
+        response = super().update(request, *args, **kwargs)
+
+        task.refresh_from_db()
+
+        if task.assigned_to and task.assigned_to != old_assignee:
+            notify_task_assigned(task)
+
+        notify_status_changed(task, old_status)
+
+        return response
 
     def destroy(self, request, *args, **kwargs):
         task = self.get_object()
