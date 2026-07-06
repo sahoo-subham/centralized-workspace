@@ -1,21 +1,25 @@
 import { useState, useEffect, useRef } from 'react'
-import { BellIcon, Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
+import {
+  Zap, Bell, Menu, X, ChevronDown, User, LogOut,
+  Home, Users, Folder, CheckSquare, FileText, Calendar,
+} from 'lucide-react'
 
 const navigation = [
-  { name: 'Dashboard', icon: '🏠' },
-  { name: 'Teams',     icon: '👥' },
-  { name: 'Projects',  icon: '📁' },
-  { name: 'Tasks',     icon: '✅' },
-  { name: 'Documents', icon: '📄' },
+  { name: 'Dashboard', icon: Home },
+  { name: 'Teams',     icon: Users },
+  { name: 'Projects',  icon: Folder },
+  { name: 'Tasks',     icon: CheckSquare },
+  { name: 'Calendar',  icon: Calendar },
+  { name: 'Documents', icon: FileText },
 ]
 
 const ROLE_STYLES = {
-  admin:     { bg: 'rgba(239,68,68,0.15)',  color: '#fca5a5', label: 'Admin' },
-  team_lead: { bg: 'rgba(245,158,11,0.15)', color: '#fcd34d', label: 'Team Lead' },
-  member:    { bg: 'rgba(99,102,241,0.15)', color: '#a5b4fc', label: 'Member' },
+  admin:     { classes: 'bg-rose-500/15 text-rose-300',    label: 'Admin' },
+  team_lead: { classes: 'bg-amber-500/15 text-amber-300',  label: 'Team Lead' },
+  member:    { classes: 'bg-indigo-500/15 text-indigo-300', label: 'Member' },
 }
 
-export default function Navbar({ activePage, onNavigate, onLogout }) {
+function Navbar({ activePage, onNavigate, onLogout }) {
   const [mobileOpen, setMobileOpen]   = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
   const [scrolled, setScrolled]       = useState(false)
@@ -54,114 +58,43 @@ export default function Navbar({ activePage, onNavigate, onLogout }) {
 
   return (
     <>
-      <style>{`
-        @keyframes navGlow {
-          0%,100% { box-shadow: 0 0 12px rgba(99,102,241,0.25); }
-          50%      { box-shadow: 0 0 28px rgba(99,102,241,0.6);  }
-        }
-        @keyframes dotPulse {
-          0%,100% { transform: scale(1);   opacity: 1;   }
-          50%      { transform: scale(1.6); opacity: 0.4; }
-        }
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-8px); }
-          to   { opacity: 1; transform: translateY(0);    }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
-        .nav-link-hover:hover {
-          background: rgba(255,255,255,0.07) !important;
-          color: #fff !important;
-        }
-        .profile-item:hover {
-          background: rgba(255,255,255,0.07) !important;
-          color: #fff !important;
-        }
-        .profile-logout:hover {
-          background: rgba(239,68,68,0.12) !important;
-          color: #fca5a5 !important;
-        }
-        .icon-btn:hover {
-          background: rgba(255,255,255,0.1) !important;
-          color: #fff !important;
-        }
-        .mobile-nav-item:hover {
-          background: rgba(255,255,255,0.06) !important;
-          color: #fff !important;
-        }
-      `}</style>
+      <nav
+        className={`sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-white/[0.07] bg-[#0A0D16]/85 px-5 backdrop-blur-2xl transition-shadow duration-300 ${
+          scrolled ? 'shadow-[0_4px_32px_rgba(0,0,0,0.5)]' : ''
+        }`}
+      >
+        <div className="flex items-center gap-1.5">
 
-      <nav style={{
-        position: 'sticky', top: 0, zIndex: 50,
-        width: '100%', height: '64px',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 20px',
-        background: 'rgba(13,15,26,0.85)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: scrolled
-          ? '0 4px 32px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05)'
-          : 'none',
-        transition: 'box-shadow 0.3s ease',
-      }}>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-
-          {/* Logo */}
           <button
             onClick={() => handleNavigate('Dashboard')}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '10px',
-              background: 'transparent', border: 'none', cursor: 'pointer',
-              padding: '4px 8px 4px 0', marginRight: '8px',
-            }}
+            className="mr-2 flex items-center gap-2.5 bg-transparent py-1 pr-2"
           >
-            <div style={{
-              width: '38px', height: '38px', borderRadius: '11px', flexShrink: 0,
-              background: 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(139,92,246,0.2))',
-              border: '1px solid rgba(99,102,241,0.35)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '18px',
-              animation: 'navGlow 3.5s ease-in-out infinite',
-            }}>⚡</div>
-            <span style={{
-              color: '#fff', fontWeight: '700', fontSize: '15px',
-              letterSpacing: '-0.3px', whiteSpace: 'nowrap',
-              display: 'none',
-            }} className="sm-show">Workspace</span>
+            <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-xl border border-purple-500/35 bg-linear-to-br from-purple-500/30 to-indigo-500/20 text-purple-200 shadow-[0_0_16px_rgba(124,58,237,0.35)]">
+              <Zap size={18} fill="currentColor" />
+            </div>
+            <span className="hidden whitespace-nowrap text-[15px] font-bold tracking-tight text-white sm:block">
+              Workspace
+            </span>
           </button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}
-            className="desktop-nav">
+          <div className="hidden items-center gap-0.5 md:flex">
             {navigation.map((item) => {
               const active = activePage === item.name
+              const Icon = item.icon
               return (
                 <button
                   key={item.name}
                   onClick={() => handleNavigate(item.name)}
-                  className="nav-link-hover"
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '6px',
-                    padding: '7px 13px', borderRadius: '9px', border: 'none',
-                    background: active ? 'rgba(99,102,241,0.18)' : 'transparent',
-                    color: active ? '#e0e7ff' : '#94a3b8',
-                    fontSize: '13px', fontWeight: active ? '600' : '500',
-                    cursor: 'pointer', transition: 'all 0.18s ease',
-                    position: 'relative', boxShadow: active ? 'inset 0 0 0 1px rgba(99,102,241,0.3)' : 'none',
-                  }}
+                  className={`relative flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-[13px] font-medium transition-colors duration-200 ${
+                    active
+                      ? 'bg-purple-500/18 text-indigo-100 shadow-[inset_0_0_0_1px_rgba(99,102,241,0.3)]'
+                      : 'text-slate-400 hover:bg-white/[0.07] hover:text-white'
+                  }`}
                 >
-                  <span style={{ fontSize: '14px', lineHeight: 1 }}>{item.icon}</span>
+                  <Icon size={14} />
                   {item.name}
                   {active && (
-                    <span style={{
-                      position: 'absolute', bottom: '3px', left: '50%',
-                      transform: 'translateX(-50%)',
-                      width: '16px', height: '2px', borderRadius: '2px',
-                      background: 'linear-gradient(90deg, #6366f1, #8b5cf6)',
-                    }} />
+                    <span className="absolute bottom-0.75 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-linear-to-r from-indigo-500 to-purple-500" />
                   )}
                 </button>
               )
@@ -169,151 +102,84 @@ export default function Navbar({ activePage, onNavigate, onLogout }) {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="flex items-center gap-2">
 
-          <button className="icon-btn" style={{
-            width: '36px', height: '36px', borderRadius: '10px',
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.07)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#94a3b8', cursor: 'pointer', position: 'relative',
-            transition: 'all 0.18s ease',
-          }}>
-            <BellIcon style={{ width: '17px', height: '17px' }} />
-            <span style={{
-              position: 'absolute', top: '8px', right: '8px',
-              width: '6px', height: '6px', borderRadius: '50%',
-              background: '#ef4444', border: '1px solid rgba(13,15,26,0.8)',
-              animation: 'dotPulse 2s ease-in-out infinite',
-            }} />
+          <button className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.07] bg-white/5 text-slate-400 transition-all duration-200 hover:bg-white/10 hover:text-white">
+            <Bell size={17} />
+            <span className="absolute right-2 top-2 h-1.5 w-1.5 animate-pulse rounded-full border border-[#0A0D16] bg-red-500" />
           </button>
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="mobile-only icon-btn"
-            style={{
-              width: '36px', height: '36px', borderRadius: '10px',
-              background: mobileOpen ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.07)',
-              display: 'none', alignItems: 'center', justifyContent: 'center',
-              color: mobileOpen ? '#a5b4fc' : '#94a3b8', cursor: 'pointer',
-              transition: 'all 0.18s ease',
-            }}
+            className={`flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.07] transition-all duration-200 md:hidden ${
+              mobileOpen ? 'bg-purple-500/20 text-indigo-300' : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white'
+            }`}
           >
-            {mobileOpen
-              ? <XMarkIcon style={{ width: '17px', height: '17px' }} />
-              : <Bars3Icon style={{ width: '17px', height: '17px' }} />
-            }
+            {mobileOpen ? <X size={17} /> : <Menu size={17} />}
           </button>
 
-          <div ref={profileRef} style={{ position: 'relative' }}>
+          <div ref={profileRef} className="relative">
             <button
               onClick={() => setProfileOpen(!profileOpen)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '4px 8px 4px 4px', borderRadius: '12px', border: 'none',
-                background: profileOpen ? 'rgba(255,255,255,0.08)' : 'transparent',
-                cursor: 'pointer', transition: 'all 0.18s ease',
-              }}
-              onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.07)'}
-              onMouseLeave={e => { if (!profileOpen) e.currentTarget.style.background = 'transparent' }}
+              className={`flex items-center gap-2 rounded-xl py-1 pl-1 pr-2 transition-colors duration-200 ${
+                profileOpen ? 'bg-white/8' : 'hover:bg-white/[0.07]'
+              }`}
             >
-              <div style={{
-                width: '34px', height: '34px', borderRadius: '50%', flexShrink: 0,
-                background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontSize: '13px', fontWeight: '700',
-                border: '2px solid rgba(99,102,241,0.35)',
-                boxShadow: '0 0 0 1px rgba(99,102,241,0.15)',
-              }}>{userInitial}</div>
-
-              <div style={{ textAlign: 'left' }} className="sm-show">
-                <p style={{ color: '#f1f5f9', fontSize: '12px', fontWeight: '600', margin: 0, lineHeight: 1.3 }}>
-                  {currentUser?.name?.split(' ')[0] || 'User'}
-                </p>
-                <span style={{
-                  fontSize: '10px', fontWeight: '600', padding: '1px 6px',
-                  borderRadius: '999px', lineHeight: 1.5,
-                  background: roleStyle.bg, color: roleStyle.color,
-                }}>{roleStyle.label}</span>
+              <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full border-2 border-purple-500/35 bg-linear-to-br from-indigo-600 to-purple-600 text-[13px] font-bold text-white shadow-[0_0_0_1px_rgba(99,102,241,0.15)]">
+                {userInitial}
               </div>
 
-              <ChevronDownIcon style={{
-                width: '14px', height: '14px', color: '#64748b',
-                transform: profileOpen ? 'rotate(180deg)' : 'rotate(0)',
-                transition: 'transform 0.2s ease',
-              }} className="sm-show" />
+              <div className="hidden text-left sm:block">
+                <p className="m-0 text-xs font-semibold leading-tight text-slate-100">
+                  {currentUser?.name?.split(' ')[0] || 'User'}
+                </p>
+                <span className={`inline-block rounded-full px-1.5 py-px text-[10px] font-semibold leading-normal ${roleStyle.classes}`}>
+                  {roleStyle.label}
+                </span>
+              </div>
+
+              <ChevronDown
+                size={14}
+                className={`hidden text-slate-500 transition-transform duration-200 sm:block ${profileOpen ? 'rotate-180' : ''}`}
+              />
             </button>
 
             {profileOpen && (
-              <div style={{
-                position: 'absolute', right: 0, top: 'calc(100% + 10px)',
-                width: '230px', borderRadius: '16px',
-                background: 'rgba(17,21,36,0.97)',
-                backdropFilter: 'blur(24px)',
-                border: '1px solid rgba(255,255,255,0.08)',
-                boxShadow: '0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03)',
-                padding: '8px', zIndex: 60,
-                animation: 'slideDown 0.18s ease',
-              }}>
-                {/* Header */}
-                <div style={{
-                  padding: '12px 12px 10px',
-                  borderBottom: '1px solid rgba(255,255,255,0.06)',
-                  marginBottom: '6px',
-                }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{
-                      width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0,
-                      background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: '#fff', fontSize: '14px', fontWeight: '700',
-                    }}>{userInitial}</div>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{ color: '#f1f5f9', fontSize: '13px', fontWeight: '600', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div className="absolute right-0 top-[calc(100%+10px)] z-60 w-57.5 rounded-2xl border border-white/8 bg-[#111524]/97 p-2 shadow-[0_24px_64px_rgba(0,0,0,0.6)] backdrop-blur-2xl animate-in fade-in slide-in-from-top-1 duration-150">
+
+                <div className="mb-1.5 border-b border-white/6 p-3 pb-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-indigo-600 to-purple-600 text-sm font-bold text-white">
+                      {userInitial}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="m-0 truncate text-[13px] font-semibold text-slate-100">
                         {currentUser?.name || 'User'}
                       </p>
-                      <p style={{ color: '#64748b', fontSize: '11px', margin: '1px 0 4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <p className="m-0 mb-1 mt-px truncate text-[11px] text-slate-500">
                         {currentUser?.email}
                       </p>
-                      <span style={{
-                        fontSize: '10px', fontWeight: '700', padding: '2px 8px',
-                        borderRadius: '999px', background: roleStyle.bg, color: roleStyle.color,
-                      }}>{roleStyle.label}</span>
+                      <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-bold ${roleStyle.classes}`}>
+                        {roleStyle.label}
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 <button
                   onClick={() => handleNavigate('Profile')}
-                  className="profile-item"
-                  style={{
-                    width: '100%', textAlign: 'left', padding: '9px 12px',
-                    borderRadius: '10px', border: 'none',
-                    background: 'transparent', color: '#cbd5e1',
-                    fontSize: '13px', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: '10px',
-                    transition: 'all 0.15s ease',
-                  }}
+                  className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-[13px] text-slate-300 transition-colors duration-150 hover:bg-white/[0.07] hover:text-white"
                 >
-                  <span>👤</span> Your Profile
+                  <User size={15} /> Your Profile
                 </button>
 
-                <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)', margin: '4px 0' }} />
+                <div className="my-1 h-px bg-white/5" />
 
                 <button
                   onClick={onLogout}
-                  className="profile-logout"
-                  style={{
-                    width: '100%', textAlign: 'left', padding: '9px 12px',
-                    borderRadius: '10px', border: 'none',
-                    background: 'transparent', color: '#cbd5e1',
-                    fontSize: '13px', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: '10px',
-                    transition: 'all 0.15s ease',
-                  }}
+                  className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2.5 text-left text-[13px] text-slate-300 transition-colors duration-150 hover:bg-red-500/12 hover:text-red-300"
                 >
-                  <span>🚪</span> Sign out
+                  <LogOut size={15} /> Sign out
                 </button>
               </div>
             )}
@@ -322,119 +188,66 @@ export default function Navbar({ activePage, onNavigate, onLogout }) {
       </nav>
 
       {mobileOpen && (
-        <div style={{
-          position: 'fixed', inset: 0, zIndex: 49,
-          top: '64px',
-          animation: 'fadeIn 0.18s ease',
-        }}>
-          {/* Backdrop */}
+        <div className="fixed inset-0 top-16 z-49 animate-in fade-in duration-150">
           <div
             onClick={() => setMobileOpen(false)}
-            style={{
-              position: 'absolute', inset: 0,
-              background: 'rgba(0,0,0,0.5)',
-              backdropFilter: 'blur(4px)',
-            }}
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           />
 
-          <div style={{
-            position: 'relative', zIndex: 1,
-            background: 'rgba(13,15,26,0.98)',
-            backdropFilter: 'blur(24px)',
-            borderBottom: '1px solid rgba(255,255,255,0.07)',
-            padding: '12px 16px 20px',
-            boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
-            animation: 'slideDown 0.2s ease',
-          }}>
+          <div className="relative z-1 border-b border-white/[0.07] bg-[#0A0D16]/98 px-4 pb-5 pt-3 shadow-[0_16px_48px_rgba(0,0,0,0.5)] backdrop-blur-2xl animate-in slide-in-from-top-2 duration-200">
 
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: '12px',
-              padding: '12px 14px', marginBottom: '10px',
-              background: 'rgba(99,102,241,0.08)',
-              border: '1px solid rgba(99,102,241,0.15)',
-              borderRadius: '12px',
-            }}>
-              <div style={{
-                width: '38px', height: '38px', borderRadius: '50%', flexShrink: 0,
-                background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: '#fff', fontSize: '14px', fontWeight: '700',
-              }}>{userInitial}</div>
-              <div style={{ minWidth: 0 }}>
-                <p style={{ color: '#f1f5f9', fontSize: '13px', fontWeight: '600', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            <div className="mb-2.5 flex items-center gap-3 rounded-xl border border-purple-500/15 bg-purple-500/8 px-3.5 py-3">
+              <div className="flex h-9.5 w-9.5 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-indigo-600 to-purple-600 text-sm font-bold text-white">
+                {userInitial}
+              </div>
+              <div className="min-w-0">
+                <p className="m-0 truncate text-[13px] font-semibold text-slate-100">
                   {currentUser?.name}
                 </p>
-                <span style={{
-                  fontSize: '10px', fontWeight: '700', padding: '1px 7px',
-                  borderRadius: '999px', background: roleStyle.bg, color: roleStyle.color,
-                }}>{roleStyle.label}</span>
+                <span className={`inline-block rounded-full px-1.5 py-px text-[10px] font-bold ${roleStyle.classes}`}>
+                  {roleStyle.label}
+                </span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+            <div className="flex flex-col gap-0.5">
               {navigation.map((item) => {
                 const active = activePage === item.name
+                const Icon = item.icon
                 return (
                   <button
                     key={item.name}
                     onClick={() => handleNavigate(item.name)}
-                    className="mobile-nav-item"
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '12px',
-                      padding: '12px 16px', borderRadius: '11px', border: 'none',
-                      background: active ? 'rgba(99,102,241,0.18)' : 'transparent',
-                      color: active ? '#e0e7ff' : '#94a3b8',
-                      fontSize: '14px', fontWeight: active ? '600' : '500',
-                      cursor: 'pointer', transition: 'all 0.15s ease',
-                      boxShadow: active ? 'inset 0 0 0 1px rgba(99,102,241,0.25)' : 'none',
-                    }}
+                    className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors duration-150 ${
+                      active
+                        ? 'bg-purple-500/18 text-indigo-100 shadow-[inset_0_0_0_1px_rgba(99,102,241,0.25)]'
+                        : 'text-slate-400 hover:bg-white/6 hover:text-white'
+                    }`}
                   >
-                    <span style={{ fontSize: '17px', width: '22px', textAlign: 'center' }}>{item.icon}</span>
+                    <Icon size={17} className="w-5.5 text-center" />
                     {item.name}
                     {active && (
-                      <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#6366f1', display: 'block' }} />
-                      </div>
+                      <span className="ml-auto h-1.5 w-1.5 rounded-full bg-indigo-500" />
                     )}
                   </button>
                 )
               })}
             </div>
 
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', marginTop: '10px', paddingTop: '10px' }}>
+            <div className="mt-2.5 border-t border-white/6 pt-2.5">
               <button
                 onClick={onLogout}
-                style={{
-                  width: '100%', display: 'flex', alignItems: 'center', gap: '12px',
-                  padding: '12px 16px', borderRadius: '11px', border: 'none',
-                  background: 'transparent', color: '#f87171',
-                  fontSize: '14px', fontWeight: '500', cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-400 transition-colors duration-150 hover:bg-red-500/10"
               >
-                <span style={{ fontSize: '17px', width: '22px', textAlign: 'center' }}>🚪</span>
+                <LogOut size={17} className="w-5.5 text-center" />
                 Sign out
               </button>
             </div>
           </div>
         </div>
       )}
-
-      <style>{`
-        .sm-show { display: block; }
-        .desktop-nav { display: flex !important; }
-        .mobile-only { display: none !important; }
-
-        @media (max-width: 879px) {
-          .desktop-nav { display: none !important; }
-          .mobile-only { display: flex !important; }
-        }
-        @media (max-width: 639px) {
-          .sm-show { display: none !important; }
-        }
-      `}</style>
     </>
   )
 }
+
+export default Navbar

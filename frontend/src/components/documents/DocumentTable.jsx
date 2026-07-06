@@ -22,7 +22,7 @@ const getFileIconMeta = (filename) => {
   return { Icon: FileIcon, classes: 'bg-purple-500/15 border-purple-500/20 text-purple-300' }
 }
 
-export default function DocumentTable({ documents, onDelete, canDelete }) {
+function DocumentTable({ documents, onDelete, canDelete }) {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const [downloadingId, setDownloadingId] = useState(null)
@@ -62,10 +62,10 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
   return (
     <>
       {!isMobile && (
-        <div className="rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl shadow-[0_8px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden">
+        <div className="rounded-3xl border border-white/10 bg-white/3 backdrop-blur-2xl shadow-[0_8px_40px_-8px_rgba(0,0,0,0.4)] overflow-hidden">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-gradient-to-r from-purple-500/[0.08] via-indigo-500/[0.05] to-purple-500/[0.08]">
+              <tr className="bg-linear-to-r from-purple-500/8 via-indigo-500/5 to-purple-500/8">
                 <th className="text-left px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Document</th>
                 <th className="text-left px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Project</th>
                 <th className="text-left px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-400">Type</th>
@@ -79,7 +79,7 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
                 const { Icon, classes } = getFileIconMeta(doc.file)
                 return (
                   <tr key={doc.id}
-                    className={`${i === 0 ? '' : 'border-t border-white/[0.06]'} transition-colors duration-150 hover:bg-purple-500/[0.04]`}
+                    className={`${i === 0 ? '' : 'border-t border-white/6'} transition-colors duration-150 hover:bg-purple-500/4`}
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -117,7 +117,7 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
                             href={doc.file_url}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3.5 py-2 text-xs font-semibold text-indigo-300 transition-all duration-200 hover:bg-white/[0.08] hover:text-white"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/4 px-3.5 py-2 text-xs font-semibold text-indigo-300 transition-all duration-200 hover:bg-white/8 hover:text-white"
                           ><Eye size={13} /> View</a>
                         )}
 
@@ -125,7 +125,7 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
                           <button
                             onClick={() => handleDownload(doc)}
                             disabled={downloadingId === doc.id}
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-b from-purple-500 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-[0_4px_14px_-2px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                            className="inline-flex items-center gap-1.5 rounded-lg bg-linear-to-b from-purple-500 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-[0_4px_14px_-2px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                           >
                             {downloadingId === doc.id
                               ? <><Loader2 size={13} className="animate-spin" /> Downloading...</>
@@ -137,7 +137,7 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
                         {canDelete && (
                           <button
                             onClick={() => onDelete(doc.id)}
-                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-red-400 transition-all duration-200 hover:bg-red-500/15 hover:border-red-400/30 hover:text-red-300"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/4 text-red-400 transition-all duration-200 hover:bg-red-500/15 hover:border-red-400/30 hover:text-red-300"
                           ><Trash2 size={14} /></button>
                         )}
                       </div>
@@ -155,7 +155,7 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
           {documents.map((doc) => {
             const { Icon, classes } = getFileIconMeta(doc.file)
             return (
-              <div key={doc.id} className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-4">
+              <div key={doc.id} className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/3 backdrop-blur-xl p-4">
                 <div className="flex items-center gap-2.5">
                   <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${classes}`}>
                     <Icon size={15} />
@@ -185,14 +185,14 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
                       href={doc.file_url}
                       target="_blank"
                       rel="noreferrer"
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] py-2 text-xs font-semibold text-indigo-300"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/4 py-2 text-xs font-semibold text-indigo-300"
                     ><Eye size={13} /> View</a>
                   )}
                   {doc.file_url && (
                     <button
                       onClick={() => handleDownload(doc)}
                       disabled={downloadingId === doc.id}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-gradient-to-b from-purple-500 to-indigo-600 py-2 text-xs font-semibold text-white disabled:opacity-60"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-linear-to-b from-purple-500 to-indigo-600 py-2 text-xs font-semibold text-white disabled:opacity-60"
                     >
                       {downloadingId === doc.id
                         ? <Loader2 size={13} className="animate-spin" />
@@ -203,7 +203,7 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
                   {canDelete && (
                     <button
                       onClick={() => onDelete(doc.id)}
-                      className="flex-1 rounded-lg border border-white/10 bg-white/[0.04] py-2 text-xs font-semibold text-red-400"
+                      className="flex-1 rounded-lg border border-white/10 bg-white/4 py-2 text-xs font-semibold text-red-400"
                     >Delete</button>
                   )}
                 </div>
@@ -215,3 +215,5 @@ export default function DocumentTable({ documents, onDelete, canDelete }) {
     </>
   )
 }
+
+export default DocumentTable;

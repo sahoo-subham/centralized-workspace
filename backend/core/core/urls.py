@@ -26,4 +26,5 @@ urlpatterns = [
     path('api/', include('projects.urls')),
     path('api/', include('tasks.urls')),
     path('api/', include('documents.urls')),
+    path('api/calendar/', include('calendar_app.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

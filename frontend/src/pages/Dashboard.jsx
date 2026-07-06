@@ -12,6 +12,7 @@ export default function Dashboard() {
     if (location.pathname.includes("/tasks")) return "Tasks";
     if (location.pathname.includes("/documents")) return "Documents";
     if (location.pathname.includes("/profile")) return "Profile";
+    if (location.pathname.includes("/calendar/events")) return "calendar";
     return "Dashboard";
   };
 
@@ -31,6 +32,9 @@ export default function Dashboard() {
         break;
       case "Profile":
         navigate("/dashboard/profile");
+        break;
+      case "Calendar":
+        navigate("/dashboard/calendar/");
         break;
       default:
         navigate("/dashboard");

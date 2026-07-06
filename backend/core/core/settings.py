@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'tasks',
     'teams',
     'users',
+    'calendar_app'
 ]
 
 MIDDLEWARE = [
@@ -176,10 +177,10 @@ DEFAULT_FROM_EMAIL = 'noreply@workspace.com'
 # Works with Gmail SMTP — requires an "App Password", not your
 # normal Gmail password (Google blocks normal passwords for SMTP).
 #
-EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST          = 'smtp.gmail.com'
-EMAIL_PORT          = 587
-EMAIL_USE_TLS       = True
-EMAIL_HOST_USER     = 'sahoosubham2603@gmail.com'
-EMAIL_HOST_PASSWORD = 'subham2603'   # generate at myaccount.google.com/apppasswords
-DEFAULT_FROM_EMAIL  = EMAIL_HOST_USER
+# EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST          = 'smtp.gmail.com'
+# EMAIL_PORT          = 587
+# EMAIL_USE_TLS       = True
+# EMAIL_HOST_USER     = 'system@gmail.com'
+# EMAIL_HOST_PASSWORD = 'password'   # generate at myaccount.google.com/apppasswords
+# DEFAULT_FROM_EMAIL  = EMAIL_HOST_USER

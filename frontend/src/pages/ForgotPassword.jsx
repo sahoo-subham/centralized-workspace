@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
+import { KeyRound, Mail, ArrowLeft } from "lucide-react";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -22,157 +23,62 @@ export default function ForgotPassword() {
     }
   };
 
+  const fieldBase = "w-full rounded-2xl border px-4 py-3 text-sm outline-none transition-all duration-200"
+  const fieldNormal = "border-white/10 bg-white/[0.04] text-white placeholder:text-slate-500 focus:border-purple-500/60 focus:ring-4 focus:ring-purple-500/10"
+  const label = "block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2"
+
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#0f1117",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "420px",
-          background: "#1a1f2e",
-          border: "1px solid #2d3348",
-          borderRadius: "24px",
-          overflow: "hidden",
-          boxShadow: "0 30px 80px rgba(0,0,0,0.5)",
-        }}
-      >
-        <div
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.15) 50%, rgba(99,102,241,0.25) 100%)",
-            borderBottom: "1px solid #2d3348",
-            padding: "32px",
-            textAlign: "center",
-          }}
-        >
-          <div
-            style={{
-              width: "56px",
-              height: "56px",
-              borderRadius: "16px",
-              background: "rgba(99,102,241,0.2)",
-              border: "1px solid rgba(99,102,241,0.3)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "26px",
-              margin: "0 auto 16px",
-            }}
-          >
-            🔑
+    <div className="relative min-h-screen bg-[#0A0D16] flex items-center justify-center px-6 overflow-hidden">
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -top-40 -left-40 h-130 w-130 rounded-full bg-purple-600/15 blur-[140px]" />
+        <div className="absolute bottom-0 -right-40 h-120 w-120 rounded-full bg-indigo-600/10 blur-[140px]" />
+      </div>
+
+      <div className="relative w-full max-w-105 rounded-3xl border border-white/10 bg-[#111524] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden">
+
+        <div className="p-8 text-center bg-linear-to-br from-purple-500/25 via-indigo-500/15 to-purple-500/25 border-b border-white/10">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500/20 border border-purple-400/30 text-purple-300">
+            <KeyRound size={24} strokeWidth={1.75} />
           </div>
-          <p
-            style={{
-              color: "#fff",
-              fontWeight: "700",
-              fontSize: "22px",
-              margin: 0,
-            }}
-          >
-            Forgot Password?
-          </p>
-          <p style={{ color: "#94a3b8", fontSize: "13px", marginTop: "6px" }}>
+          <p className="text-[22px] font-bold text-white m-0">Forgot Password?</p>
+          <p className="mt-1.5 text-[13px] text-slate-400">
             Enter your email and we'll send a reset link.
           </p>
         </div>
 
-        <div style={{ padding: "32px" }}>
+        <div className="p-8">
           {sent ? (
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: "40px", marginBottom: "16px" }}>📧</div>
-              <p
-                style={{
-                  color: "#fff",
-                  fontWeight: "600",
-                  fontSize: "16px",
-                  margin: "0 0 8px",
-                }}
-              >
-                Check your email
-              </p>
-              <p
-                style={{
-                  color: "#94a3b8",
-                  fontSize: "13px",
-                  margin: "0 0 24px",
-                }}
-              >
+            <div className="text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/15 border border-indigo-500/25 text-indigo-300">
+                <Mail size={24} />
+              </div>
+              <p className="text-base font-semibold text-white m-0 mb-2">Check your email</p>
+              <p className="text-[13px] text-slate-400 m-0 mb-6">
                 If this email exists, a reset link has been sent.
               </p>
               <Link
                 to="/login"
-                style={{
-                  color: "#818cf8",
-                  fontSize: "13px",
-                  fontWeight: "600",
-                  textDecoration: "none",
-                }}
+                className="inline-flex items-center gap-1 text-[13px] font-semibold text-indigo-300 no-underline hover:text-indigo-200"
               >
-                ← Back to login
+                <ArrowLeft size={13} /> Back to login
               </Link>
             </div>
           ) : (
-            <form
-              onSubmit={handleSubmit}
-              style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-            >
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div>
-                <label
-                  style={{
-                    color: "#94a3b8",
-                    fontSize: "11px",
-                    fontWeight: "600",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    display: "block",
-                    marginBottom: "8px",
-                  }}
-                >
-                  Email
-                </label>
+                <label className={label}>Email</label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  style={{
-                    width: "100%",
-                    background: "#232938",
-                    border: "1px solid #3f4659",
-                    borderRadius: "12px",
-                    color: "#fff",
-                    fontSize: "14px",
-                    padding: "13px 16px",
-                    outline: "none",
-                    boxSizing: "border-box",
-                    fontFamily: "inherit",
-                  }}
-                  onFocus={(e) => (e.target.style.borderColor = "#6366f1")}
-                  onBlur={(e) => (e.target.style.borderColor = "#3f4659")}
+                  className={`${fieldBase} ${fieldNormal}`}
                 />
               </div>
 
               {error && (
-                <div
-                  style={{
-                    background: "rgba(239,68,68,0.1)",
-                    border: "1px solid rgba(239,68,68,0.2)",
-                    borderRadius: "10px",
-                    padding: "10px 14px",
-                    color: "#fca5a5",
-                    fontSize: "13px",
-                    textAlign: "center",
-                  }}
-                >
+                <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-3.5 py-2.5 text-center text-[13px] text-red-300">
                   {error}
                 </div>
               )}
@@ -180,45 +86,14 @@ export default function ForgotPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                style={{
-                  width: "100%",
-                  background: loading ? "#4338ca" : "#4f46e5",
-                  border: "none",
-                  borderRadius: "12px",
-                  color: "#fff",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  padding: "14px",
-                  cursor: loading ? "not-allowed" : "pointer",
-                  opacity: loading ? 0.7 : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (!loading) e.currentTarget.style.background = "#4338ca";
-                }}
-                onMouseLeave={(e) => {
-                  if (!loading) e.currentTarget.style.background = "#4f46e5";
-                }}
+                className="w-full rounded-2xl bg-linear-to-b from-purple-500 to-indigo-600 py-3.5 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(168,85,247,0.3),0_8px_20px_-4px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {loading ? "Sending..." : "Send Reset Link →"}
               </button>
 
-              <p
-                style={{
-                  textAlign: "center",
-                  fontSize: "13px",
-                  color: "#6b7280",
-                  margin: 0,
-                }}
-              >
-                <Link
-                  to="/login"
-                  style={{
-                    color: "#818cf8",
-                    fontWeight: "600",
-                    textDecoration: "none",
-                  }}
-                >
-                  ← Back to login
+              <p className="text-center text-[13px] text-slate-500 m-0">
+                <Link to="/login" className="inline-flex items-center gap-1 font-semibold text-indigo-300 no-underline hover:text-indigo-200">
+                  <ArrowLeft size={13} /> Back to login
                 </Link>
               </p>
             </form>

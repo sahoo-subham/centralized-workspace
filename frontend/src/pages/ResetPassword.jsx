@@ -48,13 +48,13 @@ export default function ResetPassword() {
   return (
     <div className="relative min-h-screen bg-[#0A0D16] flex items-center justify-center px-6 overflow-hidden">
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-purple-600/15 blur-[140px]" />
-        <div className="absolute bottom-0 -right-40 h-[480px] w-[480px] rounded-full bg-indigo-600/10 blur-[140px]" />
+        <div className="absolute -top-40 -left-40 h-130 w-130 rounded-full bg-purple-600/15 blur-[140px]" />
+        <div className="absolute bottom-0 -right-40 h-120 w-120 rounded-full bg-indigo-600/10 blur-[140px]" />
       </div>
 
-      <div className="relative w-full max-w-[420px] rounded-3xl border border-white/10 bg-[#111524] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden">
+      <div className="relative w-full max-w-105 rounded-3xl border border-white/10 bg-[#111524] shadow-[0_30px_80px_rgba(0,0,0,0.6)] overflow-hidden">
 
-        <div className="p-8 text-center bg-gradient-to-br from-purple-500/25 via-indigo-500/15 to-purple-500/25 border-b border-white/10">
+        <div className="p-8 text-center bg-linear-to-br from-purple-500/25 via-indigo-500/15 to-purple-500/25 border-b border-white/10">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-500/20 border border-purple-400/30 text-purple-300">
             <Lock size={24} strokeWidth={1.75} />
           </div>
@@ -77,7 +77,7 @@ export default function ResetPassword() {
               </p>
               <button
                 onClick={() => navigate('/login')}
-                className="w-full rounded-2xl bg-gradient-to-b from-purple-500 to-indigo-600 py-3.5 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(168,85,247,0.3),0_8px_20px_-4px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full rounded-2xl bg-linear-to-b from-purple-500 to-indigo-600 py-3.5 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(168,85,247,0.3),0_8px_20px_-4px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
               >
                 Go to Login →
               </button>
@@ -117,7 +117,7 @@ export default function ResetPassword() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-2xl bg-gradient-to-b from-purple-500 to-indigo-600 py-3.5 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(168,85,247,0.3),0_8px_20px_-4px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full rounded-2xl bg-linear-to-b from-purple-500 to-indigo-600 py-3.5 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(168,85,247,0.3),0_8px_20px_-4px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {loading ? 'Resetting...' : 'Reset Password →'}
               </button>
