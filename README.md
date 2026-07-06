@@ -54,6 +54,7 @@ centralized-workspace/
 │   ├── projects/                   # Project management
 │   ├── tasks/                      # Task management
 │   ├── documents/                  # Document upload/download
+│   ├── calendar_app/               # Calendar and event scheduling
 │   ├── media/                      # Uploaded files
 │   ├── manage.py
 │   └── requirements.txt
