@@ -10,9 +10,9 @@ export default function Dashboard() {
     if (location.pathname.includes("/teams")) return "Teams";
     if (location.pathname.includes("/projects")) return "Projects";
     if (location.pathname.includes("/tasks")) return "Tasks";
+    if (location.pathname.includes("/calendar")) return "Calendar";
     if (location.pathname.includes("/documents")) return "Documents";
     if (location.pathname.includes("/profile")) return "Profile";
-    if (location.pathname.includes("/calendar/events")) return "calendar";
     return "Dashboard";
   };
 
@@ -27,14 +27,14 @@ export default function Dashboard() {
       case "Tasks":
         navigate("/dashboard/tasks");
         break;
+      case "Calendar":
+        navigate("/dashboard/calendar");
+        break;
       case "Documents":
         navigate("/dashboard/documents");
         break;
       case "Profile":
         navigate("/dashboard/profile");
-        break;
-      case "Calendar":
-        navigate("/dashboard/calendar/");
         break;
       default:
         navigate("/dashboard");

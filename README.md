@@ -24,6 +24,7 @@ A full-stack **Team-Based Project & Document Management System** built as part o
 - ✅ **Task Management** — Create tasks, assign to members, update status
 - 📄 **Document Management** — Upload, download, delete documents per project
 - 📊 **Dashboard** — Project stats, charts, progress overview
+- 🗓️ **Calendar** — Unified view of task deadlines and project timelines
 
 ---
 
@@ -54,6 +55,7 @@ centralized-workspace/
 │   ├── projects/                   # Project management
 │   ├── tasks/                      # Task management
 │   ├── documents/                  # Document upload/download
+│   ├── calendar_app/               # Combined calendar events feed
 │   ├── media/                      # Uploaded files
 │   ├── manage.py
 │   └── requirements.txt
@@ -61,7 +63,7 @@ centralized-workspace/
 └── frontend/                       # React + Vite
     └── src/
         ├── components/             # Reusable UI components
-        ├── pages/                  # Full pages (Login, Dashboard, etc.)
+        ├── pages/                  # Full pages (Login, Dashboard, Calendar, etc.)
         ├── services/               # Axios API calls
         ├── routes/                 # Protected & public routes
         ├── hooks/                  # Custom React hooks
@@ -128,16 +130,18 @@ npm run dev
 Create a `.env` file inside the `backend/` folder:
 
 ```env
-SECRET_KEY= 5v589eZEDSHLHEJoA0A3kNxU0n3KYW8FRt7xuTjFSj8aLMSkgXdFyQy6hD7_q39Aa4s
+SECRET_KEY=your-django-secret-key-here
 DEBUG=True
 DB_NAME=workspace_db
 DB_USER=root
-DB_PASSWORD=subham17
+DB_PASSWORD=your-mysql-password-here
 DB_HOST=localhost
 DB_PORT=3306
 ```
 
-> ⚠️ Never commit your `.env` file to GitHub!
+> ⚠️ Never commit your `.env` file to GitHub! Use a `.env.example` with
+> placeholder values (like above) for documentation instead of real
+> secrets — including in this README.
 
 ---
 
@@ -185,6 +189,76 @@ python-dotenv
 - Protected routes on frontend
 - CORS restricted to frontend origin only
 - Secret keys stored in `.env` — never committed to Git
+
+---
+
+## 💾 Database Backup & Restore
+
+This project uses MySQL. Below are the steps to back up and restore
+the database, both locally during development and in production.
+
+### Creating a backup
+
+```bash
+mysqldump -u <db_user> -p <db_name> > backup_$(date +%Y%m%d_%H%M%S).sql
+```
+
+Example:
+
+```bash
+mysqldump -u root -p workspace_db > backup_20260707_143000.sql
+```
+
+You'll be prompted for the MySQL password (matches `DB_PASSWORD` in `.env`).
+
+### Restoring from a backup
+
+```bash
+mysql -u <db_user> -p <db_name> < backup_20260707_143000.sql
+```
+
+**Note:** this overwrites existing data in `<db_name>` — restore into an
+empty/test database first if you're unsure.
+
+### Automating daily backups (optional, local/dev)
+
+Add a cron job (`crontab -e`):
+
+```bash
+0 2 * * * mysqldump -u <db_user> -p<db_password> <db_name> > /path/to/backups/backup_$(date +\%Y\%m\%d).sql
+```
+
+To avoid a plaintext password in crontab, create `~/.my.cnf`:
+
+```ini
+[client]
+user=<db_user>
+password=<db_password>
+```
+
+Restrict its permissions (`chmod 600 ~/.my.cnf`) and simplify the cron
+command to:
+
+```bash
+0 2 * * * mysqldump <db_name> > /path/to/backups/backup_$(date +\%Y\%m\%d).sql
+```
+
+### Production backups
+
+Automated backups are **not guaranteed by default** — they depend on
+the MySQL hosting provider used at deployment time. Before going live,
+confirm whether the chosen host (Render, PlanetScale, AWS RDS, Railway,
+etc.) includes automated daily backups / point-in-time recovery on the
+selected plan. If not, schedule `mysqldump` via a server-side cron job
+or CI task, storing dumps in durable storage (e.g. S3) rather than
+local disk.
+
+### What backups do _not_ cover
+
+`mysqldump` only backs up database rows — uploaded files under
+`MEDIA_ROOT` are not included and must be backed up separately (e.g.
+periodic `tar`/sync of the media folder, or relying on the
+persistence/versioning of whatever storage is used in production).
 
 ---
 
