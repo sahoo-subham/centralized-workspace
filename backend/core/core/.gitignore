@@ -1,0 +1,18 @@
+# Virtual environment
+env/
+venv/
+
+# Django
+db.sqlite3
+*.pyc
+__pycache__/
+media/
+
+# Environment variables — NEVER commit real secrets
+.env
+
+# VS Code
+.vscode/
+
+# Backups
+backups/
