@@ -121,18 +121,16 @@ function DocumentTable({ documents, onDelete, canDelete }) {
                           ><Eye size={13} /> View</a>
                         )}
 
-                        {doc.file_url && (
-                          <button
-                            onClick={() => handleDownload(doc)}
-                            disabled={downloadingId === doc.id}
-                            className="inline-flex items-center gap-1.5 rounded-lg bg-linear-to-b from-purple-500 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-[0_4px_14px_-2px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
-                          >
-                            {downloadingId === doc.id
-                              ? <><Loader2 size={13} className="animate-spin" /> Downloading...</>
-                              : <><Download size={13} /> Download</>
-                            }
-                          </button>
-                        )}
+                        <button
+                          onClick={() => handleDownload(doc)}
+                          disabled={downloadingId === doc.id}
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-linear-to-b from-purple-500 to-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-[0_4px_14px_-2px_rgba(124,58,237,0.5)] transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
+                        >
+                          {downloadingId === doc.id
+                            ? <><Loader2 size={13} className="animate-spin" /> Downloading...</>
+                            : <><Download size={13} /> Download</>
+                          }
+                        </button>
 
                         {canDelete && (
                           <button
@@ -188,18 +186,16 @@ function DocumentTable({ documents, onDelete, canDelete }) {
                       className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/4 py-2 text-xs font-semibold text-indigo-300"
                     ><Eye size={13} /> View</a>
                   )}
-                  {doc.file_url && (
-                    <button
-                      onClick={() => handleDownload(doc)}
-                      disabled={downloadingId === doc.id}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-linear-to-b from-purple-500 to-indigo-600 py-2 text-xs font-semibold text-white disabled:opacity-60"
-                    >
-                      {downloadingId === doc.id
-                        ? <Loader2 size={13} className="animate-spin" />
-                        : <><Download size={13} /> Download</>
-                      }
-                    </button>
-                  )}
+                  <button
+                    onClick={() => handleDownload(doc)}
+                    disabled={downloadingId === doc.id}
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-linear-to-b from-purple-500 to-indigo-600 py-2 text-xs font-semibold text-white disabled:opacity-60"
+                  >
+                    {downloadingId === doc.id
+                      ? <Loader2 size={13} className="animate-spin" />
+                      : <><Download size={13} /> Download</>
+                    }
+                  </button>
                   {canDelete && (
                     <button
                       onClick={() => onDelete(doc.id)}

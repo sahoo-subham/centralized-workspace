@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import {
-  Zap, Bell, Menu, X, ChevronDown, User, LogOut,
+  Zap, Menu, X, ChevronDown, User, LogOut,
   Home, Users, Folder, CheckSquare, FileText, Calendar,
 } from 'lucide-react'
 
@@ -103,11 +103,6 @@ function Navbar({ activePage, onNavigate, onLogout }) {
         </div>
 
         <div className="flex items-center gap-2">
-
-          <button className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.07] bg-white/5 text-slate-400 transition-all duration-200 hover:bg-white/10 hover:text-white">
-            <Bell size={17} />
-            <span className="absolute right-2 top-2 h-1.5 w-1.5 animate-pulse rounded-full border border-[#0A0D16] bg-red-500" />
-          </button>
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}

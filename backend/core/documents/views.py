@@ -6,6 +6,9 @@ from .models import Document, DocumentType
 from .serializers import DocumentSerializer, DocumentTypeSerializer
 from teams.permissions import IsAdminOrTeamLeadOrReadOnly, IsAdminOrReadOnly
 from django.db.models import Q
+import mimetypes
+from django.http import FileResponse, Http404
+from rest_framework.views import APIView
 
 
 class DocumentTypeListCreateView(generics.ListCreateAPIView):
@@ -60,3 +63,41 @@ class DocumentRetrieveDestroyView(generics.RetrieveDestroyAPIView):
             {'message': 'Document deleted successfully.'},
             status=status.HTTP_200_OK
         )
+    
+
+class DocumentViewFileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            doc = Document.objects.get(pk=pk, is_active=True)
+        except Document.DoesNotExist:
+            raise Http404
+
+        file_handle = doc.file.open('rb')
+        content_type, _ = mimetypes.guess_type(doc.file.name)
+        content_type = content_type or 'application/octet-stream'
+
+        response = FileResponse(file_handle, content_type=content_type)
+        filename = doc.file.name.split('/')[-1]
+        response['Content-Disposition'] = f'inline; filename="{filename}"'
+        return response
+
+
+class DocumentDownloadFileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, pk):
+        try:
+            doc = Document.objects.get(pk=pk, is_active=True)
+        except Document.DoesNotExist:
+            raise Http404
+
+        file_handle = doc.file.open('rb')
+        content_type, _ = mimetypes.guess_type(doc.file.name)
+        content_type = content_type or 'application/octet-stream'
+
+        response = FileResponse(file_handle, content_type=content_type)
+        filename = doc.file.name.split('/')[-1]
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        return response

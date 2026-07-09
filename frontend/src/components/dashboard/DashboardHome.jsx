@@ -71,13 +71,15 @@ export default function DashboardHome() {
         ? allProjects
         : allProjects.filter((p) => myTeamIds.includes(p.team))
 
+      const myProjectIds = visibleProjects.map((p) => p.id)
+
       const visibleTasks = isAdmin
         ? allTasks
         : allTasks.filter((t) => t.created_by === currentUser.id || t.assigned_to === currentUser.id)
 
       const visibleDocs = isAdmin
         ? allDocs
-        : allDocs.filter((d) => myTeamIds.includes(d.project_detail?.team))
+        : allDocs.filter((d) => myProjectIds.includes(d.project))
 
       setStats({
         teams: visibleTeams.length,
@@ -100,6 +102,7 @@ export default function DashboardHome() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+
       <div className="relative overflow-hidden">
         <div className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 rounded-full bg-indigo-600/20 blur-3xl" />
         <div className="pointer-events-none absolute -top-16 right-0 w-80 h-80 rounded-full bg-violet-600/15 blur-3xl" />
@@ -135,7 +138,7 @@ export default function DashboardHome() {
         </div>
       </div>
 
-      <div className="px-6 md:px-10 pb-10 space-y-8 mt-5">
+      <div className="px-6 md:px-10 pb-10 space-y-8">
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard
