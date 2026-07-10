@@ -138,7 +138,7 @@ export default function DashboardHome() {
         </div>
       </div>
 
-      <div className="px-6 md:px-10 pb-10 space-y-8">
+      <div className="px-6 md:px-10 pb-10 space-y-8 mt-5">
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard

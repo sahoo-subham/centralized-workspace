@@ -215,7 +215,7 @@ export default function CalendarPage() {
           background: rgba(99,102,241,0.22);
           color: #e0e7ff;
         }
-
+        
         .calendar-dark .fc-popover {
           background: #111524;
           border: 1px solid rgba(255,255,255,0.08);
