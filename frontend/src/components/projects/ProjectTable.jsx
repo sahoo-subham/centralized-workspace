@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
 import api from '../../services/api'
-import {
-  Folder, Users, Eye, Pencil, Trash2, X, Calendar, Flag, CalendarClock,
-  CheckSquare, Circle, Clock,
-} from 'lucide-react'
+import { Folder, Users, Eye, Pencil, Trash2, X, Calendar, Flag } from 'lucide-react'
+import ViewProjectModal from './ViewProjectModal'
 
 const STATUS_STYLES = {
   pending:   { classes: 'bg-slate-500/15 text-slate-300 border-slate-500/20', label: 'Pending' },
@@ -12,24 +10,10 @@ const STATUS_STYLES = {
   on_hold:   { classes: 'bg-rose-500/15 text-rose-300 border-rose-500/20', label: 'On Hold' },
 }
 
-const TASK_STATUS_STYLES = {
-  pending:     { classes: 'bg-slate-500/15 text-slate-300 border-slate-500/20', label: 'Pending', Icon: Circle },
-  in_progress: { classes: 'bg-amber-500/15 text-amber-300 border-amber-500/20', label: 'In Progress', Icon: Clock },
-  completed:   { classes: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20', label: 'Completed', Icon: CheckSquare },
-}
-
-const TASK_PRIORITY_STYLES = {
-  low:    { classes: 'bg-emerald-500/15 text-emerald-300' },
-  medium: { classes: 'bg-amber-500/15 text-amber-300' },
-  high:   { classes: 'bg-rose-500/15 text-rose-300' },
-}
-
 function ProjectTable({ projects, onDelete, onRefresh, canEdit, canDelete }) {
 
   const [viewProject, setViewProject] = useState(null)
   const [editProject, setEditProject] = useState(null)
-  const [projectTasks, setProjectTasks] = useState([])
-  const [loadingTasks, setLoadingTasks] = useState(false)
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
 
@@ -38,37 +22,6 @@ function ProjectTable({ projects, onDelete, onRefresh, canEdit, canDelete }) {
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
-
-  useEffect(() => {
-    if (!viewProject) {
-      setProjectTasks([])
-      return
-    }
-    const fetchProjectTasks = async () => {
-      setLoadingTasks(true)
-      try {
-        let combined = []
-        let url = '/tasks/?page=1'
-        while (url) {
-          const res = await api.get(url)
-          combined = [...combined, ...(res.data?.results ?? [])]
-          if (res.data?.next) {
-            const next = new URL(res.data.next)
-            url = `/tasks/?${next.searchParams.toString()}`
-          } else {
-            url = null
-          }
-        }
-        setProjectTasks(combined.filter((t) => t.project === viewProject.id))
-      } catch (err) {
-        console.error('Failed to fetch project tasks', err)
-        setProjectTasks([])
-      } finally {
-        setLoadingTasks(false)
-      }
-    }
-    fetchProjectTasks()
-  }, [viewProject])
 
   const iconBtn = (extra = '') =>
     `inline-flex h-8 w-8 items-center justify-center rounded-lg border transition-all duration-200 ${extra}`
@@ -202,135 +155,10 @@ function ProjectTable({ projects, onDelete, onRefresh, canEdit, canDelete }) {
       )}
 
       {viewProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="w-full max-w-4xl max-h-[88vh] overflow-hidden rounded-3xl border border-white/10 bg-[#111524] shadow-[0_30px_80px_rgba(0,0,0,0.6)] animate-in zoom-in-95 slide-in-from-bottom-2 duration-250 flex flex-col">
-
-            {/* Header */}
-            <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-br from-purple-500/25 via-indigo-500/15 to-purple-500/25 p-6 shrink-0">
-              <div className="flex min-w-0 items-center gap-4">
-                <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl bg-purple-500/20 border border-purple-400/30 text-purple-300">
-                  <Folder size={22} />
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate text-xl font-bold text-white">{viewProject.title}</p>
-                  <p className="mt-1 text-[13px] text-slate-400 truncate">{viewProject.description || 'No description'}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setViewProject(null)}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/5 text-slate-400 transition-colors duration-200 hover:bg-white/10 hover:text-white"
-              ><X size={16} /></button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-[300px_1fr]">
-
-              <div className="p-7 md:border-r md:border-white/10">
-                <div className="mb-5">
-                  {(() => {
-                    const s = STATUS_STYLES[viewProject.status] || STATUS_STYLES.pending
-                    return (
-                      <span className={`inline-block whitespace-nowrap rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wide ${s.classes}`}>
-                        {s.label}
-                      </span>
-                    )
-                  })()}
-                </div>
-
-                <div className="flex items-center gap-2.5 mb-4">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300">
-                    <Users size={13} />
-                  </div>
-                  <div>
-                    <p className="text-[11px] text-slate-500 m-0">Team</p>
-                    <p className="text-[13px] font-semibold text-slate-200 m-0">{viewProject.team_detail?.team_name || 'No team'}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5 mb-5">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-purple-500/20 border border-purple-500/30 text-[11px] font-bold text-purple-300">
-                    {viewProject.created_by_detail?.name?.charAt(0).toUpperCase() || '?'}
-                  </div>
-                  <div>
-                    <p className="text-[11px] text-slate-500 m-0">Created by</p>
-                    <p className="text-[13px] font-semibold text-slate-200 m-0">{viewProject.created_by_detail?.name || 'Unknown'}</p>
-                  </div>
-                </div>
-
-                <div className="border-t border-white/10 mb-5" />
-
-                <div className="flex flex-col gap-4">
-                  <div>
-                    <p className="text-[11px] text-slate-500 m-0">Start Date</p>
-                    <p className="text-[13px] font-semibold text-slate-200 mt-1 m-0">{viewProject.start_date || '—'}</p>
-                  </div>
-                  <div>
-                    <p className="text-[11px] text-slate-500 m-0">End Date</p>
-                    <p className="text-[13px] font-semibold text-slate-200 mt-1 m-0">{viewProject.end_date || '—'}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-7">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-4">
-                  Tasks ({projectTasks.length})
-                </p>
-
-                {loadingTasks ? (
-                  <div className="space-y-2">
-                    {[1, 2, 3].map((i) => (
-                      <div key={i} className="h-14 rounded-xl bg-white/[0.03] animate-pulse" />
-                    ))}
-                  </div>
-                ) : projectTasks.length === 0 ? (
-                  <div className="py-10 text-center">
-                    <p className="text-3xl mb-2">🗒️</p>
-                    <p className="text-slate-500 text-sm">No tasks created for this project yet</p>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-2.5 max-h-[420px] overflow-y-auto pr-1">
-                    {projectTasks.map((task) => {
-                      const s = TASK_STATUS_STYLES[task.status] || TASK_STATUS_STYLES.pending
-                      const p = TASK_PRIORITY_STYLES[task.priority] || TASK_PRIORITY_STYLES.low
-                      const StatusIcon = s.Icon
-                      return (
-                        <div key={task.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-3.5">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-white truncate m-0">{task.title}</p>
-                              <div className="flex items-center gap-3 mt-1.5 text-[11px] text-slate-500">
-                                <span>👤 {task.assigned_to_detail?.name || 'Unassigned'}</span>
-                                {task.due_date && (
-                                  <span className="inline-flex items-center gap-1">
-                                    <CalendarClock size={11} /> {task.due_date}
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                            <div className="flex flex-col items-end gap-1.5 shrink-0">
-                              <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase ${s.classes}`}>
-                                <StatusIcon size={10} /> {s.label}
-                              </span>
-                              <span className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-[10px] font-bold capitalize ${p.classes}`}>
-                                {task.priority}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex justify-end px-7 py-5 border-t border-white/10 shrink-0">
-              <button
-                onClick={() => setViewProject(null)}
-                className="rounded-xl border border-white/10 bg-white/[0.04] px-6 py-2.5 text-sm font-medium text-slate-300 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white"
-              >Close</button>
-            </div>
-          </div>
-        </div>
+        <ViewProjectModal
+          project={viewProject}
+          onClose={() => setViewProject(null)}
+        />
       )}
 
       {editProject && (
