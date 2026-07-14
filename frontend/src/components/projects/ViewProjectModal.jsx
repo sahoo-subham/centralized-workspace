@@ -14,7 +14,7 @@ function ViewProjectModal({ project, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
       <div className="w-full max-w-4xl max-h-[88vh] overflow-hidden rounded-3xl border border-white/10 bg-[#111524] shadow-[0_30px_80px_rgba(0,0,0,0.6)] animate-in zoom-in-95 slide-in-from-bottom-2 duration-250 flex flex-col">
-        <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-br from-purple-500/25 via-indigo-500/15 to-purple-500/25 p-6 shrink-0">
+        <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-linear-to-br from-purple-500/25 via-indigo-500/15 to-purple-500/25 p-6 shrink-0">
           <div className="flex min-w-0 items-center gap-4">
             <div className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-2xl bg-purple-500/20 border border-purple-400/30 text-purple-300">
               <Folder size={22} />
